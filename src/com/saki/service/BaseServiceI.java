@@ -7,7 +7,9 @@ import com.saki.entity.Grid;
 
 public interface BaseServiceI {
 	
-	public void saveOrUpdate(Object object);
+	public void add(Object object);
+	
+	public void update(Object object);
 	
 	public void deleteByKey(String key);
 	

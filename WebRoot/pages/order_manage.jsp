@@ -19,38 +19,55 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	<!--
 	<link rel="stylesheet" type="text/css" href="styles.css">
 	-->
-	
-<script src="<%=path%>/vendor/easyui/jquery.min.js"></script>
-<script src="<%=path%>/vendor/easyui/jquery.easyui.min.js"></script>
-<link href="<%=path%>/vendor/easyui/themes/material/easyui.css" rel="stylesheet" type="text/css">
-<link href="<%=path%>/vendor/easyui/themes/icon.css" rel="stylesheet" type="text/css">
-
-<link rel="stylesheet" type="text/css" href="<%=path%>/vendor/easyui/themes/default/easyui.css">
-    <link rel="stylesheet" type="text/css" href="<%=path%>/vendor/easyui/themes/icon.css">
-
-    <script type="text/javascript" src="<%=path%>/vendor/easyui/jquery.min.js"></script>
-    <script type="text/javascript" src="<%=path%>/vendor/easyui/jquery.easyui.min.js"></script>
+    
+    
+   <jsp:include page="/common.jsp"></jsp:include>
 
   </head>
   
-  <body>
-  	<table id="table_info" class="easyui-datagrid " style="width: 800px;height: 400px"
-            data-options="singleSelect:true,fitColumns:true,collapsible:true, pagination:'true',
-              url:'${pageContext.request.contextPath}/orderAction!loadAll.action'" >
-        <thead>
-            <tr>
-                <th data-options="field:'companyId',width:100,align:'center'"
-						sortable="true">公司id</th>
-			    <th data-options="field:'order',width:100,align:'center'">订单编号</th>
-			    <th data-options="field:'startDate',width:100,align:'center'">下单时间</th>
-			    <th data-options="field:'confirmDate',width:100,align:'center'">确认时间</th>
-			    <th data-options="field:'pillDate',width:100,align:'center'">付款时间</th>
-			    <th data-options="field:'endDate',width:100,align:'center'">结束时间</th>
-			    <th data-options="field:'status',width:100,align:'center'">订单状态</th>
-			    <th data-options="field:'amount',width:100,align:'center'">amount</th>
-			    <th data-options="field:'remark',width:100,align:'center'">备注</th>
-            </tr>
-        </thead>
-    </table>
-  </body>
+ <body class="easyui-layout">
+ 	<div data-options="region:'north',border:false,showHeader:false"  style="height:60px" >
+ 		<h3>订单管理</h3>
+ 	</div>
+ 	<div data-options="region:'center',border:false,showHeader:false" style="padding-bottom: 20px">
+ 		<table id="table_order" class="easyui-datagrid" fit="true" ></table>
+ 	</div>
+	
+    <script type="text/javascript">
+    	$(function(){
+			$('#table_order').datagrid({
+				url:'${pageContext.request.contextPath}/orderAction!loadAll.action',
+				pagination: true,
+			
+				
+				fitColumns: true,
+				singleSelect: true,
+				columns:[[
+					{field:'companyId',title:'公司ID',width:100,align:'center'},
+					{field:'order',title:'订单编号',width:100,align:'center'},
+					{field:'startDate',title:'下单时间',width:150,align:'center',
+						formatter: function(value,row,index){
+							return value.substring(0,16);
+						}},
+					{field:'confirmDate',title:'确认时间',width:150,align:'center',
+						formatter: function(value,row,index){
+							return value.substring(0,16);
+						}},
+					{field:'pillDate',title:'付款时间',width:150,align:'center',
+						formatter: function(value,row,index){
+							return value.substring(0,16);
+						}},
+					{field:'endDate',title:'结束时间',width:150,align:'center',
+						formatter: function(value,row,index){
+							return value.substring(0,16);
+						}},
+					{field:'status',title:'订单状态',width:100,align:'center'},
+					{field:'amount',title:'amount',width:100,align:'center'},
+					{field:'remark',title:'备注',width:100,align:'center'}
+				]],
+				
+			});
+		});
+    </script>
+</body>
 </html>

@@ -85,7 +85,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
       </div>
     </div>
       </div>
-   <<div data-options="region:'center',border:false,showHeader:false" class="easyui-tabs" style="padding:20px 20px 0px 20px">
+   <div data-options="region:'center',border:false,showHeader:false" class="easyui-tabs" style="padding:20px 20px 0px 20px">
         <iframe id="center-content" class="easyui-panel" frameborder=:"0"  scrolling="auto"    fit="true" data-options="border:false" src="http://www.baidu.com">
 
         </iframe>

@@ -13,7 +13,7 @@
 	<h2>Context Menu on DataGrid</h2>
 	<p>Right click on the header of DataGrid to display context menu.</p>
 	<div style="margin:20px 0;"></div>
-	<table id="dg"></table>
+	<table id="dg" fitColumns="true" ></table>
 	<script type="text/javascript">
 		$(function(){
 			$('#dg').datagrid({
@@ -21,7 +21,7 @@
 				method: 'get',
 				title: 'Context Menu on DataGrid',
 				iconCls: 'icon-save',
-				width: 700,
+				width: 1000,
 				height: 250,
 				fitColumns: true,
 				singleSelect: true,
@@ -76,6 +76,9 @@
 				});
 			}
 		}
+		$(window).resize(function () { 
+			//$('#dg').datagrid('resize'); 
+		}); 
 	</script>
 </body>
 </html>

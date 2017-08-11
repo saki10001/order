@@ -9,47 +9,50 @@ import org.springframework.stereotype.Service;
 
 import com.saki.dao.BaseDaoI;
 import com.saki.entity.Grid;
+import com.saki.model.TCompany;
 import com.saki.model.TOrder;
-import com.saki.service.OrderServiceI;
+import com.saki.service.CompanyServiceI;
 
-@Service("orderService")
-public class OrderServiceImpl implements OrderServiceI{
+@Service("companyService")
+public class CompanyServiceImpl implements CompanyServiceI{
 
-	private BaseDaoI orderDao;
-	public BaseDaoI getOrderDao() {
-		return orderDao;
+	private BaseDaoI companyDao;
+	
+	public BaseDaoI getCompanyDao() {
+		return companyDao;
 	}
 	@Autowired
-	public void setOrderDao(BaseDaoI orderDao) {
-		this.orderDao = orderDao;
+	public void setCompanyDao(BaseDaoI companyDao) {
+		this.companyDao = companyDao;
 	}
-	
+
 	@Override
 	public void add(Object object) {
-		orderDao.save(object);
+		companyDao.save(object);
 	}
 
 	@Override
 	public void update(Object object) {
-		orderDao.saveOrUpdate(object);
+		companyDao.saveOrUpdate(object);
 	}
 
 	@Override
 	public void deleteByKey(String key) {
-		orderDao.delete(getByKey(key));
+		companyDao.delete(getByKey(key));
 	}
 
 	@Override
 	public Grid loadAll(String sort, String order, String page, String rows) {
 		Grid grid = new Grid();
-		String hql = "from TOrder t";
-//		if(sort!=null && order!=null){
-//			hql = "from TOrder t order by " + sort + " " + order;
-//		}
-		List<TOrder> l = orderDao.find(hql);
+		String hql = "from TCompany t";
+		if(sort!=null && order!=null){
+			hql = "from TCompany t order by " + sort + " " + order;
+		}
+		System.out.println(hql);
+		List<TCompany> l = companyDao.find(hql);
 		grid.setTotal(l.size());
 		if(page!=null && rows !=null){
-			List<TOrder> lp = orderDao.find(hql, Integer.valueOf(page),  Integer.valueOf(rows));
+			List<TCompany> lp = companyDao.find(hql, Integer.valueOf(page),  Integer.valueOf(rows));
 			grid.setRows(lp);
 		}else{
 			grid.setRows(l);
@@ -60,8 +63,8 @@ public class OrderServiceImpl implements OrderServiceI{
 	@Override
 	public Object getByKey(String key) {
 		Map<String, Object> params = new HashMap<String, Object>();
-		params.put("id", key);
-		TOrder t = (TOrder) orderDao.get("from TOrder t where t.id = :id", params);
+		params.put("id", Integer.valueOf(key));
+		TCompany t = (TCompany) companyDao.get("from TCompany t where t.id = :id", params);
 		return t;
 	}
 
@@ -69,7 +72,7 @@ public class OrderServiceImpl implements OrderServiceI{
 	public Grid search(String row, String text, String sort, String order, String page, String rows) {
 		Grid grid = new Grid();
 		Map<String, Object> params = new HashMap<String, Object>();		
-		String hql = "from TOrder t";
+		String hql = "from TCompany t";
 		if(row!=null && text!=null){
 			params.put("text", "%" + text + "%");
 			hql = hql + " where t." + row + " like :text";
@@ -77,15 +80,15 @@ public class OrderServiceImpl implements OrderServiceI{
 		if(sort!=null && order!=null){
 			hql = hql + " order by " + sort + " " + order;
 		}	
-		List<TOrder> l = orderDao.find(hql, params);
+		List<TCompany> l = companyDao.find(hql, params);
 		grid.setTotal(l.size());
 		if(page!=null && rows !=null){
-			List<TOrder> lp = orderDao.find(hql, params, Integer.valueOf(page),  Integer.valueOf(rows));
+			List<TCompany> lp = companyDao.find(hql, params, Integer.valueOf(page),  Integer.valueOf(rows));
 			grid.setRows(lp);
 		}else{
 			grid.setRows(l);
 		}	
 		return grid;
 	}
-
+	
 }

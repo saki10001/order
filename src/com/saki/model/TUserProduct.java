@@ -93,5 +93,4 @@ public class TUserProduct implements java.io.Serializable {
 	public void setRoleId(Integer roleId) {
 		this.roleId = roleId;
 	}
-
 }

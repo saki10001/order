@@ -24,7 +24,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   <body>
     <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
       <div class="navbar-header">
-          <a class="navbar-brand" href="index.html">订单管理系统</a>
+          <a class="navbar-brand" href="<%=path%>">订单管理系统</a>
       </div>
       <!-- /.navbar-header -->
       <ul class="nav navbar-top-links navbar-right">
@@ -61,10 +61,22 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                   <i class="fa fa-dashboard fa-fw"></i>订单管理</a>
             </li>
             <li>
+                <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i>信息管理<span class="fa arrow"></span></a>
+                <ul class="nav nav-second-level">
+                    <li>
+                        <a href="#"  onclick="openTab('<%=path%>/pages/company_manage.jsp')">公司管理</a>
+                    </li>
+                    <li>
+                        <a href="#"  onclick="openTab('<%=path%>/pages/produce_select.jsp')">用户管理</a>
+                    </li>
+                </ul>
+                <!-- /.nav-second-level -->
+            </li>
+            <li>
                 <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i> 一级标题<span class="fa arrow"></span></a>
                 <ul class="nav nav-second-level">
                     <li>
-                        <a href="#"  onclick="openTab('table.html')">二级标题</a>
+                        <a href="#"  onclick="openTab('<%=path%>/pages/produce_select.jsp')">二级标题</a>
                     </li>
                     <li>
                         <a href="#">二级标题<span class="fa arrow"></span></a>
@@ -85,8 +97,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
       </div>
     </div>
       </div>
-   <div data-options="region:'center',border:false,showHeader:false" class="easyui-tabs" style="padding:20px 20px 0px 20px">
-        <iframe id="center-content" class="easyui-panel" frameborder=:"0"  scrolling="auto"    fit="true" data-options="border:false" src="http://www.baidu.com">
+   <div data-options="region:'center',border:false,showHeader:false" class="easyui-tabs" style="padding:20px 20px 22px 20px">
+        <iframe id="center-content" class="easyui-panel" frameborder="0"  scrolling="auto"    fit="true" data-options="border:false" src="http://www.baidu.com">
 
         </iframe>
       </div>

@@ -1,31 +1,27 @@
-/*閫夋嫨鑱屼綅 琛屼笟*/
+/*选择职位 行业*/
 
 
 
-.production-menu
-{
-    width: 100%;
-    height: 480px;
-    position: relative;
-    padding: 5px 0;
-}
+
 .production-menu .menu
 {
-    width: 160px;
+
+    width: 20%;
     position: absolute;
     z-index: 2;
     float: left;
+    border-width: 0px;
 }
 .production-menu .sub-menu
 {
-    width: 815px;
-    padding: 10px;
-    margin-left: 159px;
-    height: 469px;
-    overflow: auto;
-    border: #eee 1px solid;
-    float: left;
-    background: #fff;
+  padding: 10px;
+  margin-left: 20%;
+
+  overflow: auto;
+  border : 0px;
+  border-left: #eee 1px solid;
+  float: left;
+  background: #fff;
 }
 .production-menu .menu li
 {
@@ -38,10 +34,14 @@
     text-indent: 15px;
     border-bottom: #eee 1px solid;
 }
-.production-menu .menu li.sele
+.production-menu .menu li:hover
 {
     color: #e05447;
-    background: #fff url(images/ico-jj2.png) no-repeat right top;
+}
+.production-menu .menu li.sele
+{
+    color: #fff;
+    background-color: #e05447;
 }
 .production-menu .sub-menu dl, .industry-list dl
 {
@@ -54,8 +54,9 @@
 .production-menu .sub-menu dt, .industry-list dt
 {
     display: table-cell;
-    width: 90px;
+    width: 15%;
     color: #333;
+    font-weight: bold;
     padding: 2px 10px 0 0;
     vertical-align: top;
 }
@@ -71,7 +72,7 @@
     color: #666;
     display: block;
     float: left;
-    width: 166px;
+    width: 30%;
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;

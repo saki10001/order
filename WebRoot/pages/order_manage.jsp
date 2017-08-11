@@ -26,10 +26,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   </head>
   
  <body class="easyui-layout">
- 	<div data-options="region:'north',border:false,showHeader:false"  style="height:60px" >
- 		<h3>订单管理</h3>
+ 	<div data-options="region:'north',border:false,showHeader:false"  style="height:40px" >
+ 		<p style="font-size: 22px;height:40px;line-height: 40px;margin: 0px">订单管理</p>
  	</div>
- 	<div data-options="region:'center',border:false,showHeader:false" style="padding-bottom: 20px">
+ 	<div data-options="region:'center',border:false,showHeader:false" style="padding-bottom: 3px">
  		<table id="table_order" class="easyui-datagrid" fit="true" ></table>
  	</div>
 	

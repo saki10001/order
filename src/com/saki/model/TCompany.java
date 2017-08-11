@@ -2,8 +2,10 @@ package com.saki.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import org.hibernate.annotations.GenericGenerator;
 
 /**
  * TCompany entity. @author MyEclipse Persistence Tools
@@ -16,10 +18,10 @@ public class TCompany implements java.io.Serializable {
 	// Fields
 
 	private Integer id;
-	private String company;
+	private String name;
 	private String contacts;
 	private String address;
-	private String mainBusiness;
+	private String business;
 	private String level;
 	private String remark;
 
@@ -29,25 +31,20 @@ public class TCompany implements java.io.Serializable {
 	public TCompany() {
 	}
 
-	/** minimal constructor */
-	public TCompany(Integer id) {
-		this.id = id;
-	}
-
 	/** full constructor */
-	public TCompany(Integer id, String company, String contacts, String address, String mainBusiness, String level,
-			String remark) {
-		this.id = id;
-		this.company = company;
+	public TCompany(String name, String contacts, String address, String business, String level, String remark) {
+		this.name = name;
 		this.contacts = contacts;
 		this.address = address;
-		this.mainBusiness = mainBusiness;
+		this.business = business;
 		this.level = level;
 		this.remark = remark;
 	}
 
 	// Property accessors
+	@GenericGenerator(name = "generator", strategy = "increment")
 	@Id
+	@GeneratedValue(generator = "generator")
 
 	@Column(name = "id", unique = true, nullable = false)
 
@@ -59,14 +56,14 @@ public class TCompany implements java.io.Serializable {
 		this.id = id;
 	}
 
-	@Column(name = "company", length = 80)
+	@Column(name = "name", length = 80)
 
-	public String getCompany() {
-		return this.company;
+	public String getName() {
+		return this.name;
 	}
 
-	public void setCompany(String company) {
-		this.company = company;
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	@Column(name = "contacts", length = 20)
@@ -89,14 +86,14 @@ public class TCompany implements java.io.Serializable {
 		this.address = address;
 	}
 
-	@Column(name = "main_business", length = 100)
+	@Column(name = "business", length = 100)
 
-	public String getMainBusiness() {
-		return this.mainBusiness;
+	public String getBusiness() {
+		return this.business;
 	}
 
-	public void setMainBusiness(String mainBusiness) {
-		this.mainBusiness = mainBusiness;
+	public void setBusiness(String business) {
+		this.business = business;
 	}
 
 	@Column(name = "level", length = 10)

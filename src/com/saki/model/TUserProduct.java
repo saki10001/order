@@ -2,8 +2,10 @@ package com.saki.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import org.hibernate.annotations.GenericGenerator;
 
 /**
  * TUserProduct entity. @author MyEclipse Persistence Tools
@@ -27,14 +29,8 @@ public class TUserProduct implements java.io.Serializable {
 	public TUserProduct() {
 	}
 
-	/** minimal constructor */
-	public TUserProduct(Integer id) {
-		this.id = id;
-	}
-
 	/** full constructor */
-	public TUserProduct(Integer id, Integer companyId, Integer productDetailId, String status, Integer roleId) {
-		this.id = id;
+	public TUserProduct(Integer companyId, Integer productDetailId, String status, Integer roleId) {
 		this.companyId = companyId;
 		this.productDetailId = productDetailId;
 		this.status = status;
@@ -42,7 +38,9 @@ public class TUserProduct implements java.io.Serializable {
 	}
 
 	// Property accessors
+	@GenericGenerator(name = "generator", strategy = "increment")
 	@Id
+	@GeneratedValue(generator = "generator")
 
 	@Column(name = "id", unique = true, nullable = false)
 
@@ -93,4 +91,5 @@ public class TUserProduct implements java.io.Serializable {
 	public void setRoleId(Integer roleId) {
 		this.roleId = roleId;
 	}
+
 }

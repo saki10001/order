@@ -7,7 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.opensymphony.xwork2.ModelDriven;
 import com.saki.entity.Message;
 import com.saki.model.TCompany;
+import com.saki.model.TUser;
 import com.saki.service.CompanyServiceI;
+import com.saki.service.UserServiceI;
 
 @Namespace("/")
 @Action(value="companyAction")
@@ -15,6 +17,14 @@ public class CompanyAction extends BaseAction implements ModelDriven<TCompany>{
 
 	private TCompany company = new TCompany();
 	private CompanyServiceI companyService;
+	private UserServiceI userService;
+	public UserServiceI getUserService() {
+		return userService;
+	}
+	@Autowired
+	public void setUserService(UserServiceI userService) {
+		this.userService = userService;
+	}
 	@Override
 	public TCompany getModel() {
 		return company;
@@ -27,16 +37,22 @@ public class CompanyAction extends BaseAction implements ModelDriven<TCompany>{
 		this.companyService = companyService;
 	}
 	public void loadAll(){
-		String page = getParameter("page");
-		String rows = getParameter("rows");
-		String sort = getParameter("sort");
-		String order = getParameter("order");
 		super.writeJson(companyService.loadAll(sort, order, page, rows));
+	}
+	public void listAll(){
+		super.writeJson(companyService.loadAll(sort, order, page, rows).getRows());
 	}
 	public void add(){
 		Message j = new Message();
 		try{
 			companyService.add(company);
+			TUser user = new TUser();
+			String roleId = getParameter("roleId");
+			String userName = getParameter("userName");
+			user.setRoleId(Integer.valueOf(roleId));
+			user.setCompanyId(company.getId());
+			user.setUserName(userName);
+			userService.add(user);
 			j.setSuccess(true);
 			j.setMsg("添加成功");
 		}catch(Exception e){
@@ -49,6 +65,13 @@ public class CompanyAction extends BaseAction implements ModelDriven<TCompany>{
 		Message j = new Message();
 		try{
 			companyService.update(company);
+			TUser user = userService.getByCompanyId(company.getId());
+			String roleId = getParameter("roleId");
+			String userName = getParameter("userName");
+			user.setRoleId(Integer.valueOf(roleId));
+			user.setCompanyId(company.getId());
+			user.setUserName(userName);
+			userService.add(user);
 			j.setSuccess(true);
 			j.setMsg("更新成功");
 		}catch(Exception e){
@@ -73,12 +96,6 @@ public class CompanyAction extends BaseAction implements ModelDriven<TCompany>{
 		
 	}
 	public void search(){
-		String name = getParameter("name");
-		String value = getParameter("value");
-		String page = getParameter("page");
-		String rows = getParameter("rows");
-		String sort = getParameter("sort");
-		String order = getParameter("order");
 		super.writeJson(companyService.search(name, value,sort, order, page, rows));
 	}
 }

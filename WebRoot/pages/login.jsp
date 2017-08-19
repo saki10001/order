@@ -23,7 +23,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	<link href="<%=path%>/vendor/metisMenu/metisMenu.min.css" rel="stylesheet">
 	<link href="<%=path%>/vendor/dist/css/sb-admin-2.css" rel="stylesheet">
 	<link href="<%=path%>/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
-	
+	<script src="<%=path%>/vendor/jquery/jquery.min.js"></script>
 	<script src="<%=path%>/vendor/bootstrap/js/bootstrap.min.js"></script>
 	<script src="<%=path%>/vendor/metisMenu/metisMenu.min.js"></script>
 	<script src="<%=path%>/vendor/dist/js/sb-admin-2.js"></script>
@@ -38,21 +38,16 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                         <h3 class="panel-title">Please Sign In</h3>
                     </div>
                     <div class="panel-body">
-                        <form role="form">
+                        <form role="form" id="log_form">
                             <fieldset>
                                 <div class="form-group">
-                                    <input class="form-control" placeholder="E-mail" name="email" type="email" autofocus>
+                                    <input class="form-control" placeholder="userName" name="userName" type="text" autofocus>
                                 </div>
                                 <div class="form-group">
-                                    <input class="form-control" placeholder="Password" name="password" type="password" value="">
-                                </div>
-                                <div class="checkbox">
-                                    <label>
-                                        <input name="remember" type="checkbox" value="Remember Me">Remember Me
-                                    </label>
+                                    <input class="form-control" placeholder="Password" name="userPwd" type="password" value="">
                                 </div>
                                 <!-- Change this to a button or input when using this as a form -->
-                                <a href="index.html" class="btn btn-lg btn-success btn-block">Login</a>
+                                <a class="btn btn-lg btn-success btn-block" onclick="submitForm()">Login</a>
                             </fieldset>
                         </form>
                     </div>
@@ -60,5 +55,21 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
             </div>
         </div>
     </div>
+    <script>
+function submitForm(){
+	$.ajax({ 
+    	url: '${pageContext.request.contextPath}/userAction!login.action',
+    	data : $('#log_form').serialize(),
+    	dataType : 'json',
+    	success : function(obj){
+    		if(obj.success){
+				location.replace('<%=path%>' + '/index.jsp');
+			}else{
+				alert(obj.msg);
+			}
+    	}
+    });
+}
+</script>
   </body>
 </html>

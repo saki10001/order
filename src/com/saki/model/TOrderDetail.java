@@ -2,8 +2,10 @@ package com.saki.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import org.hibernate.annotations.GenericGenerator;
 
 /**
  * TOrderDetail entity. @author MyEclipse Persistence Tools
@@ -28,14 +30,8 @@ public class TOrderDetail implements java.io.Serializable {
 	public TOrderDetail() {
 	}
 
-	/** minimal constructor */
-	public TOrderDetail(Integer id) {
-		this.id = id;
-	}
-
 	/** full constructor */
-	public TOrderDetail(Integer id, Integer orderId, Integer productDetailId, Integer num, long price, String remark) {
-		this.id = id;
+	public TOrderDetail(Integer orderId, Integer productDetailId, Integer num, long price, String remark) {
 		this.orderId = orderId;
 		this.productDetailId = productDetailId;
 		this.num = num;
@@ -44,7 +40,9 @@ public class TOrderDetail implements java.io.Serializable {
 	}
 
 	// Property accessors
+	@GenericGenerator(name = "generator", strategy = "increment")
 	@Id
+	@GeneratedValue(generator = "generator")
 
 	@Column(name = "id", unique = true, nullable = false)
 

@@ -11,12 +11,15 @@ import com.saki.dao.BaseDaoI;
 import com.saki.entity.Grid;
 import com.saki.model.TCompany;
 import com.saki.model.TOrder;
+import com.saki.model.TUser;
 import com.saki.service.CompanyServiceI;
+import com.saki.service.UserServiceI;
 
 @Service("companyService")
 public class CompanyServiceImpl implements CompanyServiceI{
 
 	private BaseDaoI companyDao;
+	private UserServiceI userService;
 	
 	public BaseDaoI getCompanyDao() {
 		return companyDao;
@@ -33,7 +36,7 @@ public class CompanyServiceImpl implements CompanyServiceI{
 
 	@Override
 	public void update(Object object) {
-		companyDao.saveOrUpdate(object);
+		companyDao.update(object);
 	}
 
 	@Override
@@ -53,9 +56,9 @@ public class CompanyServiceImpl implements CompanyServiceI{
 		grid.setTotal(l.size());
 		if(page!=null && rows !=null){
 			List<TCompany> lp = companyDao.find(hql, Integer.valueOf(page),  Integer.valueOf(rows));
-			grid.setRows(lp);
+			grid.setRows(copyToEntity(lp));
 		}else{
-			grid.setRows(l);
+			grid.setRows(copyToEntity(l));
       }	
 		return grid;
 	}
@@ -84,11 +87,27 @@ public class CompanyServiceImpl implements CompanyServiceI{
 		grid.setTotal(l.size());
 		if(page!=null && rows !=null){
 			List<TCompany> lp = companyDao.find(hql, params, Integer.valueOf(page),  Integer.valueOf(rows));
-			grid.setRows(lp);
+			grid.setRows(copyToEntity(lp));
 		}else{
-			grid.setRows(l);
+			grid.setRows(copyToEntity(l));
 		}	
 		return grid;
 	}
-	
+	private List<TCompany> copyToEntity(List<TCompany> lc){
+		for(int i=0; i<lc.size(); i++){
+			TUser u = userService.getByCompanyId(lc.get(i).getId());
+			if(u!=null){
+				lc.get(i).setRoleId(u.getRoleId());
+				lc.get(i).setUserName(u.getUserName());
+			}			
+		}
+		return lc;		
+	}
+	public UserServiceI getUserService() {
+		return userService;
+	}
+	@Autowired
+	public void setUserService(UserServiceI userService) {
+		this.userService = userService;
+	}
 }

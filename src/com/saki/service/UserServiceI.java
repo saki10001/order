@@ -1,5 +1,8 @@
 package com.saki.service;
 
-public interface UserServiceI extends BaseServiceI{
+import com.saki.model.TUser;
 
+public interface UserServiceI extends BaseServiceI{
+	public TUser login(TUser user);
+	public TUser getByCompanyId(int companyId);
 }

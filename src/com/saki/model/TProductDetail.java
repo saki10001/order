@@ -2,8 +2,10 @@ package com.saki.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import org.hibernate.annotations.GenericGenerator;
 
 /**
  * TProductDetail entity. @author MyEclipse Persistence Tools
@@ -21,6 +23,8 @@ public class TProductDetail implements java.io.Serializable {
 	private String format;
 	private String material;
 	private String remark;
+	
+	private int selected = 0;
 
 	// Constructors
 
@@ -28,15 +32,8 @@ public class TProductDetail implements java.io.Serializable {
 	public TProductDetail() {
 	}
 
-	/** minimal constructor */
-	public TProductDetail(Integer id) {
-		this.id = id;
-	}
-
 	/** full constructor */
-	public TProductDetail(Integer id, Integer productId, String subProduct, String format, String material,
-			String remark) {
-		this.id = id;
+	public TProductDetail(Integer productId, String subProduct, String format, String material, String remark) {
 		this.productId = productId;
 		this.subProduct = subProduct;
 		this.format = format;
@@ -45,7 +42,9 @@ public class TProductDetail implements java.io.Serializable {
 	}
 
 	// Property accessors
+	@GenericGenerator(name = "generator", strategy = "increment")
 	@Id
+	@GeneratedValue(generator = "generator")
 
 	@Column(name = "id", unique = true, nullable = false)
 
@@ -105,6 +104,14 @@ public class TProductDetail implements java.io.Serializable {
 
 	public void setRemark(String remark) {
 		this.remark = remark;
+	}
+
+	public int getSelected() {
+		return selected;
+	}
+
+	public void setSelected(int selected) {
+		this.selected = selected;
 	}
 
 }

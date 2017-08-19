@@ -61,7 +61,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		function company_add(){
 			$('#company_dlg').dialog('open');	
 			$('#company_dlg').dialog('setTitle','添加企业');
-			$("#company_save").click(function(){
+			$("#company_save").unbind('click').click(function(){
   				$.ajax({
 					url : '${pageContext.request.contextPath}/companyAction!add.action',
 					data : $('#company_form').serialize(),
@@ -83,7 +83,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     			$('#company_dlg').dialog('open');	
     			$('#company_dlg').dialog('setTitle','编辑企业');
     			$('#company_form').form('load', row);
-				$("#company_save").click(function(){
+				$("#company_save").unbind('click').click(function(){
   					$.ajax({
 						url : '${pageContext.request.contextPath}/companyAction!update.action',
 						data : $('#company_form').serialize(),
@@ -127,7 +127,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     			}
 		}
 		function company_close(){
-			document.getElementById('company_form').reset();
+			$('#company_form').form('reset');
+			$('#company_form').form('clear');
 			$('#company_dlg').dialog('close');	
 			$('#company_table').datagrid('reload');
 		}
@@ -145,6 +146,18 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     		<div class="form-group col-md-12">
             	<label class="col-md-4" style="display: inline-block;height: 34px;line-height: 34px;text-align: left;width: 30%">公司名称：</label>
                 <input name="name" class=" form-control" style="display: inline-block;width: 70%">
+            </div>
+            <div class="form-group col-md-12">
+            	<label class="col-md-4" style="display: inline-block;height: 34px;line-height: 34px;text-align: left;width: 30%">企业类型：</label>
+                <select name="roleId" id="roleId" 
+                    		class="form-control select2 easyui-combobox" style="width: 70%;height: 86%" editable="false">
+                	<option value="2">供货商</option>
+                	<option value="3">客户</option>
+                </select>
+            </div>
+            <div class="form-group col-md-12">
+            	<label class="col-md-4" style="display: inline-block;height: 34px;line-height: 34px;text-align: left;width: 30%">登录账号：</label>
+                <input name="userName" class=" form-control" style="display: inline-block;width: 70%">
             </div>
             <div class="form-group col-md-12">
             	<label class="col-md-4" style="display: inline-block;height: 34px;line-height: 34px;text-align: left;width: 30%">联系人：</label>

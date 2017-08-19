@@ -22,6 +22,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   </head>
   
   <body>
+  <%
+	if (session.getAttribute("loged")!=null && session.getAttribute("loged").toString() == "true") {
+	%>
     <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
       <div class="navbar-header">
           <a class="navbar-brand" href="<%=path%>">订单管理系统</a>
@@ -34,12 +37,14 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                   <i class="fa fa-user fa-fw"></i> <i class="fa fa-caret-down"></i>
               </a>
               <ul class="dropdown-menu dropdown-user">
+                  <!-- 
                   <li><a href="#"><i class="fa fa-user fa-fw"></i> User Profile</a>
                   </li>
                   <li><a href="#"><i class="fa fa-gear fa-fw"></i> Settings</a>
                   </li>
                   <li class="divider"></li>
-                  <li><a href="login.html"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
+                   -->
+                  <li><a onclick="logout()"><i class="fa fa-sign-out fa-fw"></i> 注销</a>
                   </li>
               </ul>
               <!-- /.dropdown-user -->
@@ -56,49 +61,45 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
         <div class="navbar-default sidebar" role="navigation">
             <div class="sidebar-nav navbar-collapse">
         <ul class="nav" id="side-menu">
-            <li>
-                <a href="#"  class="active" onclick="openTab('<%=path%>/pages/order_manage.jsp')">
-                  <i class="fa fa-dashboard fa-fw"></i>订单管理</a>
-            </li>
-            <li>
+		<%	
+			if (Integer.valueOf(session.getAttribute("roleId").toString()) == 1) {
+		%>
+			<li>
                 <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i>信息管理<span class="fa arrow"></span></a>
                 <ul class="nav nav-second-level">
                     <li>
                         <a href="#"  onclick="openTab('<%=path%>/pages/company_manage.jsp')">公司管理</a>
                     </li>
                     <li>
-                        <a href="#"  onclick="openTab('<%=path%>/pages/produce_select.jsp')">用户管理</a>
+                        <a href="#"  onclick="openTab('<%=path%>/pages/user_manage.jsp')">用户管理</a>
                     </li>
                 </ul>
                 <!-- /.nav-second-level -->
             </li>
+		<%
+			}else if (Integer.valueOf(session.getAttribute("roleId").toString()) == 2) {
+		%>
+			<li>
+                <a href="#"  class="active" onclick="openTab('<%=path%>/pages/produce_select.jsp')">
+                  <i class="fa fa-dashboard fa-fw"></i>产品类别选择</a>
+            </li>
+		<%
+			}else if (Integer.valueOf(session.getAttribute("roleId").toString()) == 3) {
+		%>
             <li>
-                <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i> 一级标题<span class="fa arrow"></span></a>
-                <ul class="nav nav-second-level">
-                    <li>
-                        <a href="#"  onclick="openTab('<%=path%>/pages/produce_select.jsp')">二级标题</a>
-                    </li>
-                    <li>
-                        <a href="#">二级标题<span class="fa arrow"></span></a>
-                        <ul class="nav nav-third-level">
-                            <li>
-                                <a href="#">三级标题</a>
-                            </li>
-                            <li>
-                                <a href="#">三级标题1111</a>
-                            </li>
-                        </ul>
-                        <!-- /.nav-third-level -->
-                    </li>
-                </ul>
-                <!-- /.nav-second-level -->
+                <a href="#"  class="active" onclick="openTab('<%=path%>/pages/produce_select.jsp')">
+                  <i class="fa fa-dashboard fa-fw"></i>产品类别选择</a>
             </li>
+        <%
+			}
+		%>   
         </ul>
       </div>
     </div>
       </div>
    <div data-options="region:'center',border:false,showHeader:false" class="easyui-tabs" style="padding:20px 20px 22px 20px">
-        <iframe id="center-content" class="easyui-panel" frameborder="0"  scrolling="auto"    fit="true" data-options="border:false" src="http://www.baidu.com">
+        <iframe id="center-content" class="easyui-panel" frameborder="0"  scrolling="auto"  
+          fit="true" data-options="border:false">
 
         </iframe>
       </div>
@@ -108,11 +109,35 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
         function openTab(url){
           document.getElementById("center-content").src = url;
         };
+        function logout(){
+        	$.ajax({ 
+    			url: '${pageContext.request.contextPath}/userAction!logout.action',
+    			dataType : 'json',
+    			success : function(obj){
+    				if(obj.success){
+    					alert(obj.msg);
+						location.replace('<%=path%>' + '/pages/login.jsp');
+					}else{
+						alert(obj.msg);
+					}
+    			}
+    		});
+        }
     </script>
     <style type="text/css">
-         .tabs-panels>.panel>.panel-body {  
-    overflow: hidden;  
+    .tabs-panels>.panel>.panel-body {  
+    	overflow: hidden;  
     } 
     </style>
+    <%
+		} else {
+	%>
+	<script>
+ 	  	 alert('登陆信息已过期，请重新登录');
+ 		 location.replace('<%=path%>' + '/pages/login.jsp');
+	</script>
+	<%
+		}
+	%>	
   </body>
 </html>

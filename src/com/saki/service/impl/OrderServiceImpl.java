@@ -31,7 +31,7 @@ public class OrderServiceImpl implements OrderServiceI{
 
 	@Override
 	public void update(Object object) {
-		orderDao.saveOrUpdate(object);
+		orderDao.update(object);
 	}
 
 	@Override
@@ -43,9 +43,9 @@ public class OrderServiceImpl implements OrderServiceI{
 	public Grid loadAll(String sort, String order, String page, String rows) {
 		Grid grid = new Grid();
 		String hql = "from TOrder t";
-//		if(sort!=null && order!=null){
-//			hql = "from TOrder t order by " + sort + " " + order;
-//		}
+		if(sort!=null && order!=null){
+			hql = "from TOrder t order by " + sort + " " + order;
+		}
 		List<TOrder> l = orderDao.find(hql);
 		grid.setTotal(l.size());
 		if(page!=null && rows !=null){
@@ -60,7 +60,7 @@ public class OrderServiceImpl implements OrderServiceI{
 	@Override
 	public Object getByKey(String key) {
 		Map<String, Object> params = new HashMap<String, Object>();
-		params.put("id", key);
+		params.put("id", Integer.valueOf(key));
 		TOrder t = (TOrder) orderDao.get("from TOrder t where t.id = :id", params);
 		return t;
 	}

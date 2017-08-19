@@ -2,8 +2,10 @@ package com.saki.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import org.hibernate.annotations.GenericGenerator;
 
 /**
  * TProduct entity. @author MyEclipse Persistence Tools
@@ -29,14 +31,12 @@ public class TProduct implements java.io.Serializable {
 	}
 
 	/** minimal constructor */
-	public TProduct(Integer id, String product) {
-		this.id = id;
+	public TProduct(String product) {
 		this.product = product;
 	}
 
 	/** full constructor */
-	public TProduct(Integer id, String product, String type, String unit, String base, String remark) {
-		this.id = id;
+	public TProduct(String product, String type, String unit, String base, String remark) {
 		this.product = product;
 		this.type = type;
 		this.unit = unit;
@@ -45,7 +45,9 @@ public class TProduct implements java.io.Serializable {
 	}
 
 	// Property accessors
+	@GenericGenerator(name = "generator", strategy = "increment")
 	@Id
+	@GeneratedValue(generator = "generator")
 
 	@Column(name = "id", unique = true, nullable = false)
 

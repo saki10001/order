@@ -2,8 +2,10 @@ package com.saki.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import org.hibernate.annotations.GenericGenerator;
 
 /**
  * TSupllierOrderDetail entity. @author MyEclipse Persistence Tools
@@ -29,15 +31,9 @@ public class TSupllierOrderDetail implements java.io.Serializable {
 	public TSupllierOrderDetail() {
 	}
 
-	/** minimal constructor */
-	public TSupllierOrderDetail(Integer id) {
-		this.id = id;
-	}
-
 	/** full constructor */
-	public TSupllierOrderDetail(Integer id, Integer conpanyId, Integer supllierOrderId, Integer productDetailId,
-			Integer num, double price, String remark) {
-		this.id = id;
+	public TSupllierOrderDetail(Integer conpanyId, Integer supllierOrderId, Integer productDetailId, Integer num,
+			double price, String remark) {
 		this.conpanyId = conpanyId;
 		this.supllierOrderId = supllierOrderId;
 		this.productDetailId = productDetailId;
@@ -47,7 +43,9 @@ public class TSupllierOrderDetail implements java.io.Serializable {
 	}
 
 	// Property accessors
+	@GenericGenerator(name = "generator", strategy = "increment")
 	@Id
+	@GeneratedValue(generator = "generator")
 
 	@Column(name = "id", unique = true, nullable = false)
 

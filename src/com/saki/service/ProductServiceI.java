@@ -6,6 +6,6 @@ import com.saki.entity.Product;
 
 public interface ProductServiceI extends BaseServiceI{
 	public ArrayList<Product> listAll();
-	public ArrayList<Product> listByUser();
+	public ArrayList<Product> listByCompany(int companyId);
 
 }

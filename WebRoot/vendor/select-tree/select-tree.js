@@ -8,10 +8,10 @@ function initMenu(id, obj){
   // datalist.append("<div class='menu' id='firstMenu' >" + "" + "</div>");
 
   var firstMenu = $("#firstMenu");
+  firstMenu.html("");
   firstMenu.append("<div id='result' style='display:none'></div>");
   var resultArea = firstMenu.find("#result");
-  var secondMenu = $("#secondMenu");
-
+  var secondMenu = $("#secondMenu"); 
   firstMenu.append("<ul></ul>");
   $.each(data, function (i, obj) {   // 循环第一级
       $(firstMenu).find("ul").append("<li id='dl_" + i + "' name='" + i + "'>" + obj.product + "</li>");
@@ -31,11 +31,13 @@ function initMenu(id, obj){
             secondMenu.find("dl[id='dl_" + j + "']").append("<dd id='dd_" + j + "'></dd>");
             $.each(data[index].children[j].children, function (m, dist) {
             	if(dist.selected!=null&&dist.selected==1){
-                    var threeMenu = "<a class='sele' href='javascript:void(0)' id='" +  dist.id  + "'>" + dist.subProduct + "</a>";
+                    var threeMenu = "<a class='sele' href='javascript:void(0)' id='" +  dist.id  + "'>"
+                    + dist.subProduct + ' - ' + dist.format + ' - ' + dist.material + "</a>";
                      resultArea.find("a[id='c_" + dist.id + "']").remove();
                      resultArea.append("<a href='#' id='c_" +dist.id + "'>" +dist.id + "</a>");
                   }else{
-                    var threeMenu = "<a href='javascript:void(0)' id='" +  dist.id  + "'>" + dist.subProduct + "</a>";
+                    var threeMenu = "<a href='javascript:void(0)' id='" +  dist.id  + "'>"
+                    + dist.subProduct + ' - ' + dist.format + ' - ' + dist.material + "</a>";
                 }
               secondMenu.find("dl[id='dl_" + j + "'] dd[id='dd_" + j + "']").append(threeMenu);
             });
@@ -75,5 +77,5 @@ function getSelected(){
     if (results.length > 0) {
       results = results.substr(0, results.length - 1);
     }
-    alert(results);
+    return results;
 }

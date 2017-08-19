@@ -16,6 +16,14 @@ import com.alibaba.fastjson.JSON;
 @ParentPackage("basePackage")
 @Namespace("/")
 public class BaseAction {
+	
+	String name = getParameter("name");
+	String value = getParameter("value");
+	String page = getParameter("page");
+	String rows = getParameter("rows");
+	String sort = getParameter("sort");
+	String order = getParameter("order");
+	
 	public void writeJson(Object object){
 		try {
 			String json = JSON.toJSONStringWithDateFormat(object, "yyyy-MM-dd HH:mm:ss");

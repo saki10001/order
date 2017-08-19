@@ -25,6 +25,9 @@ public class TCompany implements java.io.Serializable {
 	private String level;
 	private String remark;
 
+	private Integer roleId;
+	private String userName;
+	
 	// Constructors
 
 	/** default constructor */
@@ -114,6 +117,22 @@ public class TCompany implements java.io.Serializable {
 
 	public void setRemark(String remark) {
 		this.remark = remark;
+	}
+
+	public String getUserName() {
+		return userName;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+
+	public Integer getRoleId() {
+		return roleId;
+	}
+
+	public void setRoleId(Integer roleId) {
+		this.roleId = roleId;
 	}
 
 }

@@ -67,7 +67,7 @@
 			<tx:method name="count*" />
 			<tx:method name="remove*" />
 			<tx:method name="repair" />
-			<tx:method name="login" />
+			<tx:method name="log*" />
 			<tx:method name="deleteAndRepair" />
 			<tx:method name="loadAll"/>
 			<tx:method name="get*" />

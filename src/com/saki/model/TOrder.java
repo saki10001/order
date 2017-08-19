@@ -3,8 +3,10 @@ package com.saki.model;
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import org.hibernate.annotations.GenericGenerator;
 
 /**
  * TOrder entity. @author MyEclipse Persistence Tools
@@ -33,15 +35,9 @@ public class TOrder implements java.io.Serializable {
 	public TOrder() {
 	}
 
-	/** minimal constructor */
-	public TOrder(Integer id) {
-		this.id = id;
-	}
-
 	/** full constructor */
-	public TOrder(Integer id, Integer companyId, String order, Date startDate, Date confirmDate, Date pillDate,
-			Date endDate, String status, double amount, String remark) {
-		this.id = id;
+	public TOrder(Integer companyId, String order, Date startDate, Date confirmDate, Date pillDate, Date endDate,
+			String status, double amount, String remark) {
 		this.companyId = companyId;
 		this.order = order;
 		this.startDate = startDate;
@@ -54,7 +50,9 @@ public class TOrder implements java.io.Serializable {
 	}
 
 	// Property accessors
+	@GenericGenerator(name = "generator", strategy = "increment")
 	@Id
+	@GeneratedValue(generator = "generator")
 
 	@Column(name = "id", unique = true, nullable = false)
 

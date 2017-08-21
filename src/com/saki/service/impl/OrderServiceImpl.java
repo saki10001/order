@@ -1,5 +1,6 @@
 package com.saki.service.impl;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,6 +11,8 @@ import org.springframework.stereotype.Service;
 import com.saki.dao.BaseDaoI;
 import com.saki.entity.Grid;
 import com.saki.model.TOrder;
+import com.saki.model.TProduct;
+import com.saki.model.TProductDetail;
 import com.saki.service.OrderServiceI;
 
 @Service("orderService")
@@ -87,5 +90,48 @@ public class OrderServiceImpl implements OrderServiceI{
 		}	
 		return grid;
 	}
-
+	@Override
+	public List<Map<String, Object>> searchDetail(String id ) {
+		String hql = "from TProduct t , TProductDetail d, TOrder o , TOrderDetail od "
+				+ " where t.id = d.productId  and o.id = od.orderId and od.productDetailId = d.id   and  o.id = " + id  ;
+		List<Object[]> list = orderDao.find(hql);
+		List<Map<String , Object>>  mapList = new ArrayList<Map<String , Object>>();
+		for (int i = 0; i < list.size(); i++) {
+			Object[] objs = list.get(i);
+			//主表数据
+			TProduct product = (TProduct) objs[0];
+			TProductDetail detail = (TProductDetail) objs[1];
+			Map<String , Object >  map = new HashMap<String,Object>();
+			map.put("product", product.getProduct() );
+			map.put("type",  product.getType());
+			map.put("sub_product", detail.getSubProduct());
+			map.put("materail", detail.getMaterial());
+//			map.put("acount", );
+			map.put("unit", product.getUnit());
+//			map.put("price",  detail );
+			map.put("detailId", detail.getId());
+			map.put("productId", product.getId());
+			mapList.add(map);
+		}
+		
+		return mapList ;
+	}
+	@Override
+	public List<TProduct> searchProduct() {
+		  String hql = "select distinct  new TProduct(product , unit) from TProduct  " ;
+		  List<TProduct> list = orderDao.find(hql);
+		  return list;
+		
+	}
+	@Override
+	public List<TProduct> searchProductType(String product) {
+		String  hql = "from TProduct t where t.product = '" + product + "'";
+		List<TProduct> list = orderDao.find(hql);
+		return list;
+	}
+	public List<TProductDetail> searchDetailByProductId(String productId) {
+		String  hql = "from TProductDetail t where t.productId = '" + productId + "'";
+		List<TProductDetail> list = orderDao.find(hql);
+		return list;
+	}
 }

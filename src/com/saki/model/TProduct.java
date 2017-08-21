@@ -34,6 +34,11 @@ public class TProduct implements java.io.Serializable {
 	public TProduct(String product) {
 		this.product = product;
 	}
+	
+	public TProduct(Integer id, String product) {
+		this.id = id;
+		this.product = product;
+	}
 
 	/** full constructor */
 	public TProduct(String product, String type, String unit, String base, String remark) {
@@ -43,7 +48,22 @@ public class TProduct implements java.io.Serializable {
 		this.base = base;
 		this.remark = remark;
 	}
-
+	public TProduct(Integer id, String product, String type, String unit, String base, String remark) {
+		this.id = id;
+		this.product = product;
+		this.type = type;
+		this.unit = unit;
+		this.base = base;
+		this.remark = remark;
+	}
+	 /**
+     * distinct constructor 
+     * @param produnct
+     */
+	public TProduct(String produnct , String  unit) {
+		 this.product = produnct;
+		 this.unit = unit ;
+	}
 	// Property accessors
 	@GenericGenerator(name = "generator", strategy = "increment")
 	@Id

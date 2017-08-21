@@ -20,7 +20,7 @@ public class TOrder implements java.io.Serializable {
 
 	private Integer id;
 	private Integer companyId;
-	private String order;
+	private String orderNo;
 	private Date startDate;
 	private Date confirmDate;
 	private Date pillDate;
@@ -36,10 +36,10 @@ public class TOrder implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public TOrder(Integer companyId, String order, Date startDate, Date confirmDate, Date pillDate, Date endDate,
+	public TOrder(Integer companyId, String orderNo, Date startDate, Date confirmDate, Date pillDate, Date endDate,
 			String status, double amount, String remark) {
 		this.companyId = companyId;
-		this.order = order;
+		this.orderNo = orderNo;
 		this.startDate = startDate;
 		this.confirmDate = confirmDate;
 		this.pillDate = pillDate;
@@ -74,15 +74,16 @@ public class TOrder implements java.io.Serializable {
 		this.companyId = companyId;
 	}
 
-	@Column(name = "order", length = 50)
+	@Column(name = "order_no", length = 50)
 
-	public String getOrder() {
-		return this.order;
+	public String getOrderNo() {
+		return orderNo;
 	}
 
-	public void setOrder(String order) {
-		this.order = order;
+	public void setOrderNo(String orderNo) {
+		this.orderNo = orderNo;
 	}
+	
 
 	@Column(name = "start_date", length = 19)
 

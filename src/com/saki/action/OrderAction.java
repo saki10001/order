@@ -1,12 +1,25 @@
 package com.saki.action;
 
+import java.io.UnsupportedEncodingException;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.lang.xwork.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.struts2.convention.annotation.Action;
 import org.apache.struts2.convention.annotation.Namespace;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.opensymphony.xwork2.ModelDriven;
+import com.saki.entity.Message;
 import com.saki.model.TOrder;
+import com.saki.model.TOrderDetail;
+import com.saki.model.TProduct;
+import com.saki.model.TProductDetail;
 import com.saki.service.OrderServiceI;
 
 @Namespace("/")
@@ -52,5 +65,86 @@ public class OrderAction extends BaseAction implements ModelDriven<TOrder>{
 		String sort = getParameter("sort");
 		String order = getParameter("order");
 		super.writeJson(orderService.search(name, value,sort, order, page, rows));
+	}
+	
+	public void searchDetail() {
+		String id = getParameter("id");
+		if(!StringUtils.isEmpty(id)) {
+			List<Map<String,Object>>  list = orderService.searchDetail(id);
+			String jsonString = JSON.toJSONString(list);
+			JSONArray jsonArray = JSONArray.parseArray(jsonString);
+			super.writeJson(jsonArray);
+		}
+		
+	}
+	
+	public void getProduct() {
+		List<TProduct>  list = orderService.searchProduct();
+		String jsonString = JSON.toJSONString(list);
+		JSONArray jsonArray = JSONArray.parseArray(jsonString);
+		super.writeJson(jsonArray);
+	}
+	
+	public void getProductType() {
+	    String  product = getParameter("product");
+	    try {
+			product = new String(product.getBytes("ISO-8859-1"),"UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+		List<TProduct>  list  = orderService.searchProductType(product);
+		String jsonString = JSON.toJSONString(list);
+		JSONArray jsonArray = JSONArray.parseArray(jsonString);
+		super.writeJson(jsonArray);
+	}
+	
+	public void getProductDetail() {
+		String productId = getParameter("productId");
+		List<TProductDetail> list = orderService.searchDetailByProductId(productId);
+		String jsonString = JSON.toJSONString(list);
+		JSONArray jsonArray = JSONArray.parseArray(jsonString);
+		super.writeJson(jsonArray);
+	}
+	
+	public void getChanges( ) {
+	     String companyId = getParameter("companyId");
+	     TOrder order  = new TOrder();
+	     order.setOrderNo("1111");
+	     order.setCompanyId(Integer.valueOf(companyId));
+	     order.setStartDate(new Date());
+	     orderService.add(order);
+	     System.out.println(order.getId());
+	     String insert = getParameter("inserted");
+	     System.out.println(insert);
+	     JSONArray jsonArr =  JSON.parseArray(insert);
+	     System.out.println(jsonArr);
+	     jsonArr.getJSONObject(0);
+	     for(int i = 0 ; i < jsonArr.size() ; i ++) {
+	    	    	   JSONObject obj = jsonArr.getJSONObject(i);
+	    	    	   TOrderDetail detail = new TOrderDetail();
+	    	    	   detail.setNum(StringUtils.isEmpty(obj.getString("acount")) ? 0 : obj.getIntValue("acount"));
+	    	    	   detail.setOrderId(order.getId());
+	    	    	   detail.setProductDetailId(obj.getInteger("detailId")==0?0:obj.getIntValue("detailId"));
+	    	    	   orderService.add(detail);
+	     }
+	     Message j = new Message();
+	     j.setSuccess(true);
+	     j.setMsg("添加成功");
+	     super.writeJson(j);
+	} 
+	
+	public void deleteOrder(){
+		Message j = new Message();
+		try {
+			String id = getParameter("id");
+			orderService.deleteByKey(id);
+			j.setSuccess(true);
+			j.setMsg("删除成功");
+		} catch (Exception e) {
+			e.printStackTrace();
+			j.setSuccess(false);
+			j.setMsg("删除失败");
+		}
+		super.writeJson(j);
 	}
 }

@@ -21,6 +21,7 @@ import com.saki.model.TOrderDetail;
 import com.saki.model.TProduct;
 import com.saki.model.TProductDetail;
 import com.saki.service.OrderServiceI;
+import com.saki.utils.DateUtil;
 
 @Namespace("/")
 @Action(value="orderAction")
@@ -107,18 +108,54 @@ public class OrderAction extends BaseAction implements ModelDriven<TOrder>{
 	}
 	
 	public void getChanges( ) {
-	     String companyId = getParameter("companyId");
-	     TOrder order  = new TOrder();
-	     order.setOrderNo("1111");
-	     order.setCompanyId(Integer.valueOf(companyId));
-	     order.setStartDate(new Date());
-	     orderService.add(order);
-	     System.out.println(order.getId());
-	     String insert = getParameter("inserted");
-	     System.out.println(insert);
-	     JSONArray jsonArr =  JSON.parseArray(insert);
+		 String orderId = getParameter("id");
+		 System.out.println(orderId);
+		 String insert = getParameter("inserted");
+		 String update = getParameter("updated");
+		 String delete = getParameter("deleted");
+		 if(StringUtils.isEmpty(orderId)) {
+			 String companyId = getParameter("companyId");
+			 if(StringUtils.isEmpty(companyId)) {
+				   companyId = String.valueOf((Integer)getSession().getAttribute("companyId"));
+			 }
+			 order  = new TOrder();
+			 order.setOrderNo("cus_" +  DateUtil.getStringDateShort());
+			 order.setCompanyId(Integer.valueOf(companyId));
+			 order.setStartDate(new Date());
+			 orderService.add(order);
+			 insertDetail(insert);
+		 }else {
+			 order = (TOrder)orderService.getByKey(orderId);
+			 if(StringUtils.isNotEmpty(insert)) {
+				 insertDetail(insert);
+			 }
+			 if(StringUtils.isNotEmpty(update)) {
+				   updateDetail(update);
+			 }
+			 if(StringUtils.isNotEmpty(delete)) {
+				   deleteDetail(delete);
+			 }
+		 }
+	     Message j = new Message();
+	     j.setSuccess(true);
+	     j.setMsg("添加成功");
+	     super.writeJson(j);
+	} 
+	private void deleteDetail(String delete) {
+		JSONArray jsonArr =  JSON.parseArray(delete);
+	     //jsonArr.getJSONObject(0);
+	     for(int i = 0 ; i < jsonArr.size() ; i ++) {
+	    	    	   JSONObject obj = jsonArr.getJSONObject(i);
+	    	    	   TOrderDetail detail = new TOrderDetail();
+	    	    	   detail = (TOrderDetail)orderService.getByDetailId(obj.getString("id"));
+	    	    	   orderService.delete(detail);
+	     }
+		
+	}
+	public void insertDetail(String insert) {
+		JSONArray jsonArr =  JSON.parseArray(insert);
 	     System.out.println(jsonArr);
-	     jsonArr.getJSONObject(0);
+	    // jsonArr.getJSONObject(0);
 	     for(int i = 0 ; i < jsonArr.size() ; i ++) {
 	    	    	   JSONObject obj = jsonArr.getJSONObject(i);
 	    	    	   TOrderDetail detail = new TOrderDetail();
@@ -127,12 +164,22 @@ public class OrderAction extends BaseAction implements ModelDriven<TOrder>{
 	    	    	   detail.setProductDetailId(obj.getInteger("detailId")==0?0:obj.getIntValue("detailId"));
 	    	    	   orderService.add(detail);
 	     }
-	     Message j = new Message();
-	     j.setSuccess(true);
-	     j.setMsg("添加成功");
-	     super.writeJson(j);
-	} 
+	}
 	
+	public void updateDetail(String update) {
+		JSONArray jsonArr =  JSON.parseArray(update);
+	     //jsonArr.getJSONObject(0);
+	     for(int i = 0 ; i < jsonArr.size() ; i ++) {
+	    	    	   JSONObject obj = jsonArr.getJSONObject(i);
+	    	    	   TOrderDetail detail = new TOrderDetail();
+	    	    	   detail = (TOrderDetail)orderService.getByDetailId(obj.getString("id"));
+	    	    	   if(detail != null) {
+	    	    		   detail.setNum(StringUtils.isEmpty(obj.getString("acount")) ? 0 : obj.getIntValue("acount"));
+	    	    		   detail.setProductDetailId(obj.getInteger("detailId")==0?0:obj.getIntValue("detailId"));
+	    	    		   orderService.update(detail);
+	    	    	   }
+	     }
+	}
 	public void deleteOrder(){
 		Message j = new Message();
 		try {

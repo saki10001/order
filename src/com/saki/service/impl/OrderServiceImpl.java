@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.saki.dao.BaseDaoI;
 import com.saki.entity.Grid;
 import com.saki.model.TOrder;
+import com.saki.model.TOrderDetail;
 import com.saki.model.TProduct;
 import com.saki.model.TProductDetail;
 import com.saki.service.OrderServiceI;
@@ -101,7 +102,9 @@ public class OrderServiceImpl implements OrderServiceI{
 			//主表数据
 			TProduct product = (TProduct) objs[0];
 			TProductDetail detail = (TProductDetail) objs[1];
+			TOrderDetail oDetail = (TOrderDetail) objs[3];
 			Map<String , Object >  map = new HashMap<String,Object>();
+			map.put("id", oDetail.getId());
 			map.put("product", product.getProduct() );
 			map.put("type",  product.getType());
 			map.put("sub_product", detail.getSubProduct());
@@ -134,4 +137,27 @@ public class OrderServiceImpl implements OrderServiceI{
 		List<TProductDetail> list = orderDao.find(hql);
 		return list;
 	}
+	@Override
+	public TOrderDetail getByDetailId(String detailId) {
+		String  hql = "from TOrderDetail t where t.id = '" + detailId + "'";
+		List<TOrderDetail> list = orderDao.find(hql);
+		if(list!= null  && list.size()>0) {
+			  
+			return list.get(0);
+		}
+		return null ;
+	}
+	@Override
+	public void delete(TOrderDetail detail) {
+		orderDao.delete(detail);
+	}
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<TOrderDetail> getOrderDetailsForSupplierOrder() {
+		String  hql = "from TOrderDetail t ";
+		List<TOrderDetail> list = orderDao.find(hql);
+		return list;
+	}
+	
+	
 }

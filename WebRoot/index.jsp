@@ -83,7 +83,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                         <a href="#"  onclick="openTab('<%=path%>/pages/order_manage.jsp')">客户订单</a>
                     </li>
                     <li>
-                        <a href="#"  onclick="openTab('<%=path%>/pages/user_manage.jsp')">供应商订单</a>
+                        <a href="#"  onclick="openTab('<%=path%>/pages/supplier_mange.jsp')">供应商订单</a>
                     </li>
                 </ul>
                 <!-- /.nav-second-level -->
@@ -95,12 +95,36 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                 <a href="#"  class="active" onclick="openTab('<%=path%>/pages/produce_select.jsp')">
                   <i class="fa fa-dashboard fa-fw"></i>产品类别选择</a>
             </li>
+            <li>
+                <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i>订单管理<span class="fa arrow"></span></a>
+                <ul class="nav nav-second-level">
+                    <li>
+                        <a href="#"  onclick="openTab('<%=path%>/pages/order_manage.jsp')">客户订单</a>
+                    </li>
+                    <li>
+                        <a href="#"  onclick="openTab('<%=path%>/pages/supplier_mange.jsp')">供应商订单</a>
+                    </li>
+                </ul>
+                <!-- /.nav-second-level -->
+            </li>
 		<%
 			}else if (Integer.valueOf(session.getAttribute("roleId").toString()) == 3) {
 		%>
             <li>
                 <a href="#"  class="active" onclick="openTab('<%=path%>/pages/produce_select.jsp')">
                   <i class="fa fa-dashboard fa-fw"></i>产品类别选择</a>
+            </li>
+            <li>
+                <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i>订单管理<span class="fa arrow"></span></a>
+                <ul class="nav nav-second-level">
+                    <li>
+                        <a href="#"  onclick="openTab('<%=path%>/pages/order_manage.jsp')">客户订单</a>
+                    </li>
+                    <li>
+                        <a href="#"  onclick="openTab('<%=path%>/pages/supplier_mange.jsp')">供应商订单</a>
+                    </li>
+                </ul>
+                <!-- /.nav-second-level -->
             </li>
         <%
 			}

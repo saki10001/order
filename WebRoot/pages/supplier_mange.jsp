@@ -8,7 +8,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <html>
   <head>
     <base href="<%=basePath%>">
-    <title>订单管理</title>
+    <title>供应商订单管理</title>
 	<meta http-equiv="pragma" content="no-cache">
 	<meta http-equiv="cache-control" content="no-cache">
 	<meta http-equiv="expires" content="0">    
@@ -69,7 +69,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     	$(function(){
     		
 			$('#table_order').datagrid({
-				url:'${pageContext.request.contextPath}/orderAction!loadAll.action',
+				url:'${pageContext.request.contextPath}/supplier!loadAll.action',
 				pagination: true,
 				fitColumns: true,
 				singleSelect: true,
@@ -78,7 +78,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					iconCls: 'icon-add',
 					handler: function(){order_add();}
 				},'-',{
-					text:'修改',
+					text:'订单详情',
 					iconCls: 'icon-edit',
 					handler: function(){order_edit();}
 				},'-',{
@@ -88,9 +88,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				}],
 				columns:[[
 					{field:'id', hidden:'true',editor:'textbox' },
-					{field:'companyId',title:'公司ID',width:100,align:'center'},
-					{field:'orderNo',title:'订单编号',width:100,align:'center'},
-					{field:'startDate',title:'下单时间',width:150,align:'center',
+					{field:'supplierOrderNo',title:'供应商订单',width:100,align:'center'},
+					{field:'transportDate',title:'下单时间',width:150,align:'center',
 						formatter: function(value,row,index){
 							if(value){
 								return value.substring(0,16);
@@ -99,31 +98,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 							}
 							
 						}},
-					{field:'confirmDate',title:'确认时间',width:150,align:'center',
-						formatter: function(value,row,index){
-							if(value){
-								return value.substring(0,16);
-							}else{
-								return "";
-							}
-						}},
-					{field:'pillDate',title:'付款时间',width:150,align:'center',
-						formatter: function(value,row,index){
-							if(value){
-								return value.substring(0,16);
-							}else{
-								return "";
-							}
-						}},
-					{field:'endDate',title:'结束时间',width:150,align:'center',
-						formatter: function(value,row,index){
-							if(value){
-								return value.substring(0,16);
-							}else{
-								return "";
-							}
-						}},
-						{field:'amount',title:'订单总价',width:100,align:'center',editor:'textbox'},
 					{field:'status',title:'订单状态',width:100,align:'center'},
 					{field:'remark',title:'备注',width:100,align:'center'}
 				]],
@@ -167,7 +141,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     	var editIndex = undefined;
 		$(function(){
 			$('#table_add').datagrid({
-				url:'${pageContext.request.contextPath}/orderAction!searchDetail.action' ,
+				url:'${pageContext.request.contextPath}/supplier!searchDetail.action' ,
 				pagination: true,
 				fitColumns: true,
 				singleSelect: true,
@@ -189,98 +163,25 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					iconCls: 'icon-undo',
 					handler: function(){reject();}
 				},'-',{
+					text:'订单拆分',
+					iconCls: 'icon-edit',
+					handler: function(){order_edit();}
+				},'-',{
 					text:'提交',
 					iconCls: 'icon-ok',
 					handler: function(){submitData();}
 				}],
 				columns:[[
-					{field:'product',title:'产品大类',width:100,align:'center',
-						editor : {    
-	                        type : 'combobox',    
-	                        options : {    
-	                            url:'${pageContext.request.contextPath}/orderAction!getProduct.action',  
-	                            valueField:'product' ,   
-	                            textField:'product',  
-	                            onSelect:function(data){  
-	                                var row = $('#table_add').datagrid('getSelected');  
-	                                var rowIndex = $('#table_add').datagrid('getRowIndex',row);//获取行号  
-	                                 var ed = $("#table_add").datagrid('getEditor', {  
-	                                        index : rowIndex,  
-	                                        field : 'unit'  
-	                                    });  
-	                                $(ed.target).textbox('setValue',  data.unit);   
-	                                var thisTarget = $('#table_add').datagrid('getEditor', {'index':rowIndex,'field':'product'}).target;  
-	                                var value = thisTarget.combobox('getValue');  
-	                                var target = $('#table_add').datagrid('getEditor', {'index':rowIndex,'field':'type'}).target;  
-	                                target.combobox('clear'); //清除原来的数据  
-	                                var subtarget = $('#table_add').datagrid('getEditor', {'index':rowIndex,'field':'sub_product'}).target;  
-	                                subtarget.combobox('clear');
-	                                var url = '${pageContext.request.contextPath}/orderAction!getProductType.action?product='+data.product;  
-	                                target.combobox('reload', url);//联动下拉列表重载   */
-	                            }  
-	                        }    
-	                    	}/* ,
-						formatter : function (value, row, index) {
-			                   
-			                    return row.materail;
-			                } */
-					},
-					{field:'type',title:'产品类型',width:100,align:'center',
-						editor : {    
-	                        type : 'combobox',    
-	                        options : {    
-	                           // url:'${pageContext.request.contextPath}/orderAction!getProduct.action',  
-	                            valueField:'type' ,   
-	                            textField:'type',  
-	                            onSelect:function(data){  
-	                                var row = $('#table_add').datagrid('getSelected');  
-	                                var rowIndex = $('#table_add').datagrid('getRowIndex',row);//获取行号  
-	                                var thisTarget = $('#table_add').datagrid('getEditor', {'index':rowIndex,'field':'type'}).target;  
-	                                var value = thisTarget.combobox('getValue');  
-	                                var idvalue = $("#table_add").datagrid('getEditor', {  
-                                        index : rowIndex,  
-                                        field : 'productId'  
-                                    });  
-                                $(idvalue.target).textbox('setValue',  data.id ); 
-	                                var target = $('#table_add').datagrid('getEditor', {'index':rowIndex,'field':'sub_product'}).target;  
-	                                target.combobox('clear'); //清除原来的数据  
-	                                var url = '${pageContext.request.contextPath}/orderAction!getProductDetail.action?productId='+data.id;  
-	                                target.combobox('reload', url);//联动下拉列表重载   
-	                            }  
-	                        }    
-	                    	}
-					},
-					{field:'sub_product',title:'产品规格',width:100,align:'center',
-						editor : {    
-	                        type : 'combobox',    
-	                        options : {    
-	                           // url:'${pageContext.request.contextPath}/orderAction!getProduct.action',  
-	                            valueField:'subProduct' ,   
-	                            textField:'subProduct',  
-	                            onSelect:function(data){  
-	                                var row = $('#table_add').datagrid('getSelected');  
-	                                var rowIndex = $('#table_add').datagrid('getRowIndex',row);//获取行号  
-	                                 var ed = $("#table_add").datagrid('getEditor', {  
-	                                        index : rowIndex,  
-	                                        field : 'materail'  
-	                                    });  
-	                                $(ed.target).textbox('setValue',  data.material); 
-	                                $(ed.target).combobox('disable');
-	                                var idvalue = $("#table_add").datagrid('getEditor', {  
-                                        index : rowIndex,  
-                                        field : 'detailId'  
-                                    });  
-                                $(idvalue.target).textbox('setValue',  data.id );   
-	                            }  
-	                        }    
-	                    	}},
-					{field:'materail',title:'材质',width:100,align:'center',editor:'textbox'},
+					{field:'product',title:'产品大类',width:100,align:'center'},
+					{field:'type',title:'产品类型',width:100,align:'center'},
+					{field:'sub_product',title:'产品规格',width:100,align:'center'},
+					{field:'materail',title:'材质',width:100,align:'center'},
 					{field:'acount',title:'数量',width:100,align:'center',editor:'textbox'},
-					{field:'unit',title:'单位',width:100,align:'center',editor:'textbox'},
-					{field:'price',title:'单价',width:100,align:'center',editor:'textbox'},
+					{field:'unit',title:'单位',width:100,align:'center'},
+					{field:'price',title:'单价',width:100,align:'center'},
 					{field:'detailId', hidden:'true',editor:'textbox' },
 					{field:'productId', hidden:'true',editor:'textbox' },
-					{field:'remark',title:'备注',width:100,align:'center',editor:'textbox'},
+					{field:'remark',title:'备注',width:100,align:'center'},
 					{field:'id', hidden:'true',editor:'textbox' }
 				]],
 				
@@ -346,14 +247,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     		if(row){
     			$("#order_dlg").dialog({
     				onOpen: function () {
-                        $("#startDate").textbox("setValue",row.startDate.split(" ")[0]);   
-                        $("#orderNo").val(row.orderNo);   
                         $("#id").val(row.id); 
                     }
     			});
     			$('#order_dlg').dialog('open');	
     			$('#order_dlg').dialog('setTitle','编辑订单');
-			$("#startDate").val(row.startDate);
 			$('#table_add').datagrid('reload', {
 				 id: $("#id").val()
 			});

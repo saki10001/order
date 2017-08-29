@@ -79,6 +79,7 @@
 			<tx:method name="list*" />
 			<tx:method name="add*" />
 			<tx:method name="search*"/>
+			<tx:method name="split*"/>
 			<tx:method name="datagrid*" propagation="SUPPORTS" />
 
 			<tx:method name="*" propagation="SUPPORTS" />

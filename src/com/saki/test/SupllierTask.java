@@ -1,19 +1,9 @@
 package com.saki.test;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.saki.model.TOrderDetail;
-import com.saki.model.TOrderMapping;
-import com.saki.model.TSupllierOrder;
-import com.saki.model.TSupllierOrderDetail;
 import com.saki.service.OrderServiceI;
 import com.saki.service.SupllierOrderServiceI;
-import com.saki.utils.DateUtil;
 
 public class SupllierTask {
 	//采用Spring框架的依赖注入
@@ -36,7 +26,7 @@ public class SupllierTask {
 	 * 
 	 */
     public void getSupllierOrder(){  
-    		supllierOrderService.getSupllierOrder();
+    		//supllierOrderService.getSupllierOrder();
     }  
       
     

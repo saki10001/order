@@ -24,15 +24,11 @@
 	</bean> -->
 
 
-    <task:annotation-driven /> <!-- 定时器开关-->  
-  
-        <!--  
-            这里表示的是每隔五秒执行一次  
-        -->  
+    <task:annotation-driven /> <!-- 定时器开关-->   
      <bean id="myTaskXml" class="com.saki.test.SupllierTask"></bean>  
   
     <task:scheduled-tasks>  
-        <task:scheduled ref="myTaskXml" method="getSupllierOrder" cron="0 0/5 * * * ?" />  
+        <task:scheduled ref="myTaskXml" method="getSupllierOrder" cron="0 0/2 * * * ?" />  
     </task:scheduled-tasks>  
     
      

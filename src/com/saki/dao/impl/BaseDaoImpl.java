@@ -138,11 +138,19 @@ public class BaseDaoImpl<T> implements BaseDaoI<T> {
 	public void deleteTree(String id) {
 		this.getCurrentSession().createQuery("delete from Tunit t where t.id = " + id).executeUpdate();
 	}
+	
 
 	@Override
 	public List<T> find(String hql, int number) {
 		Query q=this.getCurrentSession().createQuery(hql);
 		return q.setMaxResults(number).list();
+	}
+
+	@Override
+	public int deleteSupDetailById(String orderId, String detailId) {
+		return this.getCurrentSession().createQuery("delete from TSupllierOrderDetail t where t.id = "
+					+ detailId + " and t.supllierOrderId = " + orderId  + "and t.status = '2'").executeUpdate();
+		
 	}
 
 }

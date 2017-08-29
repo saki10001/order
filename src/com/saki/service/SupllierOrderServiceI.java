@@ -3,6 +3,7 @@ package com.saki.service;
 import java.util.List;
 import java.util.Map;
 
+import com.saki.model.TCompany;
 import com.saki.model.TProduct;
 import com.saki.model.TSupllierOrderDetail;
 
@@ -20,5 +21,11 @@ public interface SupllierOrderServiceI  extends BaseServiceI{
 	void getOrderDetail();
 
 	void getSupllierOrder();
+
+	void splitOrder(String id);
+
+	int deleteDetailById(String orderId, String detailId);
+
+	List<TCompany> searchCompany();
 
 }

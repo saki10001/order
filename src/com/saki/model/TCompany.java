@@ -126,6 +126,8 @@ public class TCompany implements java.io.Serializable {
 	public void setUserName(String userName) {
 		this.userName = userName;
 	}
+	
+	@Column(name = "roleId")
 
 	public Integer getRoleId() {
 		return roleId;

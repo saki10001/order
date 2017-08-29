@@ -85,11 +85,15 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					text:'删除',
 					iconCls: 'icon-remove',
 					handler: function(){order_delete();}
+				},'-',{
+					text:'审核',
+					iconCls: 'icon-remove',
+					handler: function(){order_check();}
 				}],
 				columns:[[
 					{field:'id', hidden:'true',editor:'textbox' },
 					{field:'supplierOrderNo',title:'供应商订单',width:100,align:'center'},
-					{field:'transportDate',title:'下单时间',width:150,align:'center',
+					{field:'transportDate',title:'发货时间',width:150,align:'center',
 						formatter: function(value,row,index){
 							if(value){
 								return value.substring(0,16);
@@ -98,7 +102,15 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 							}
 							
 						}},
-					{field:'status',title:'订单状态',width:100,align:'center'},
+					{field:'status',title:'订单状态',width:100,align:'center',
+							formatter: function(value,row,index){
+								if(value == '0'){
+									return "未审核";
+								}else if(value == '2'){
+									return "已审核";
+								}
+								
+							}},
 					{field:'remark',title:'备注',width:100,align:'center'}
 				]],
 				
@@ -147,25 +159,17 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				singleSelect: true,
 				onClickRow: onClickRow,
 				toolbar: [{
-					text:'添加',
-					iconCls: 'icon-add',
-					handler: function(){append();}
-				},'-',{
 					text:'删除',
 					iconCls: 'icon-remove',
 					handler: function(){removeit();}
-				}/*  ,'-',{
-					text:'保存',
-					iconCls: 'icon-save',
-					handler: function(){accept();}
-				} */ ,'-',{
-					text:'取消',
-					iconCls: 'icon-undo',
-					handler: function(){reject();}
 				},'-',{
 					text:'订单拆分',
 					iconCls: 'icon-edit',
-					handler: function(){order_edit();}
+					handler: function(){order_split();}
+				},'-',{
+					text:'取消',
+					iconCls: 'icon-undo',
+					handler: function(){reject();}
 				},'-',{
 					text:'提交',
 					iconCls: 'icon-ok',
@@ -179,8 +183,31 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					{field:'acount',title:'数量',width:100,align:'center',editor:'textbox'},
 					{field:'unit',title:'单位',width:100,align:'center'},
 					{field:'price',title:'单价',width:100,align:'center'},
+					{field:'companyName',title:'供货商',width:100,align:'center',
+						editor : {    
+	                        type : 'combobox',    
+	                        options : {    
+	                            url:'${pageContext.request.contextPath}/supplier!getCompany.action',  
+	                            valueField:'name' ,   
+	                            textField:'name',  
+	                            onSelect:function(data){  
+	                            	console.info(data);
+	                                var row = $('#table_add').datagrid('getSelected');  
+	                                var rowIndex = $('#table_add').datagrid('getRowIndex',row);//获取行号  
+	                                var thisTarget = $('#table_add').datagrid('getEditor', {'index':rowIndex,'field':'companyName'}).target;  
+	                                var value = thisTarget.combobox('getValue');  
+	                                var idvalue = $("#table_add").datagrid('getEditor', {  
+                                        index : rowIndex,  
+                                        field : 'companyId'  
+                                    });  
+                                $(idvalue.target).textbox('setValue',  data.id ); 
+	                            }  
+	                        }    
+	                    }
+					},
 					{field:'detailId', hidden:'true',editor:'textbox' },
 					{field:'productId', hidden:'true',editor:'textbox' },
+					{field:'companyId', hidden:'true',editor:'textbox' },
 					{field:'remark',title:'备注',width:100,align:'center'},
 					{field:'id', hidden:'true',editor:'textbox' }
 				]],
@@ -215,6 +242,33 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				});
 			});  */
 		}
+    	
+    	function order_check(){
+			var row = $('#table_order').datagrid('getSelected');
+    		if(row){
+    			$.messager.confirm(
+    				'提示',
+    				'确定要删除么?',
+    				function(r) {
+    					if (r) {
+    						$.ajax({ 
+    			    			url: '${pageContext.request.contextPath}/supplier!checkSupllierOrder.action',
+    			    			data : {"id":row.id},
+    			    			dataType : 'json',
+    			    			success : function(obj){
+    			    				if(obj.success){
+    			    				 	alert(obj.msg);
+    			    				 	$('#table_order').datagrid('reload');
+    			    				}else{
+    			    					alert(obj.msg);
+    			    					$('#table_order').datagrid('reload');
+    			    				}
+    			    			}
+    			    		});
+    					}
+    				});  		
+    			}
+    	}
     	function order_delete(){
 			var row = $('#table_order').datagrid('getSelected');
 			
@@ -225,7 +279,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     				function(r) {
     					if (r) {
     						$.ajax({ 
-    			    			url: '${pageContext.request.contextPath}/orderAction!deleteOrder.action',
+    			    			url: '${pageContext.request.contextPath}/supplier!deleteSupllierOrder.action',
     			    			data : {"id":row.id},
     			    			dataType : 'json',
     			    			success : function(obj){
@@ -242,6 +296,33 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     				});  		
     			}
 		}
+    	
+    	function order_split(){
+			var row = $('#table_add').datagrid('getSelected');
+    		if(row){
+    			$.messager.confirm(
+    				'提示',
+    				'确定进行拆分么?',
+    				function(r) {
+    					if (r) {
+    						$.ajax({ 
+    			    			url: '${pageContext.request.contextPath}/supplier!splitOrder.action',
+    			    			data : {"id":row.id},
+    			    			dataType : 'json',
+    			    			success : function(obj){
+    			    				if(obj.success){
+    			    				 	alert(obj.msg);
+    			    				 	$('#table_add').datagrid('reload');
+    			    				}else{
+    			    					alert(obj.msg);
+    			    					$('#table_add').datagrid('reload');
+    			    				}
+    			    			}
+    			    		});
+    					}
+    				});  		
+    			}
+    	}
     	function order_edit(){
 			var row = $('#table_order').datagrid('getSelected');
     		if(row){
@@ -302,18 +383,33 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				}
 			}
 		}
-		function append(){
-			if (endEditing()){
-				$('#table_add').datagrid('appendRow',{status:'P'});
-				editIndex = $('#table_add').datagrid('getRows').length-1;
-				$('#table_add').datagrid('selectRow', editIndex)
-						.datagrid('beginEdit', editIndex);
-			}
-		}
 		function removeit(){
 			if (editIndex == undefined){return}
-			$('#table_add').datagrid('cancelEdit', editIndex)
-					.datagrid('deleteRow', editIndex);
+			var orderRow = $('#table_order').datagrid('getSelected');
+			var row = $('#table_add').datagrid('getSelected');
+    		if(row){
+    			$.messager.confirm(
+    				'提示',
+    				'确定要删除么?',
+    				function(r) {
+    					if (r) {
+    						$.ajax({ 
+    			    			url: '${pageContext.request.contextPath}/supplier!deleteSupllierOrderDetail.action',
+    			    			data : {"orderId":orderRow.id , "detailId": row.id},
+    			    			dataType : 'json',
+    			    			success : function(obj){
+    			    				if(obj.success){
+    			    				 	alert(obj.msg);
+    			    				 	$('#table_add').datagrid('reload');
+    			    				}else{
+    			    					alert(obj.msg);
+    			    					$('#table_add').datagrid('reload');
+    			    				}
+    			    			}
+    			    		});
+    					}
+    				});  		
+    			}
 			editIndex = undefined;
 		}
 		function accept(){
@@ -344,7 +440,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		                    if (updated.length) {  
 		                        effectRow["updated"] = JSON.stringify(updated);  
 		                    } 
-		                    $.post("${pageContext.request.contextPath}/orderAction!getChanges.action?"  + data  , effectRow, function(obj) {
+		                    $.post("${pageContext.request.contextPath}/supplier!getChanges.action?"  + data  , effectRow, function(obj) {
 		                				if(obj.success){
 		    			    				 	alert(obj.msg);
 		    			    				 	 $('#order_dlg').dialog('close');	

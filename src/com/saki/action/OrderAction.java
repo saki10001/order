@@ -88,11 +88,6 @@ public class OrderAction extends BaseAction implements ModelDriven<TOrder>{
 	
 	public void getProductType() {
 	    String  product = getParameter("product");
-	    try {
-			product = new String(product.getBytes("ISO-8859-1"),"UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		}
 		List<TProduct>  list  = orderService.searchProductType(product);
 		String jsonString = JSON.toJSONString(list);
 		JSONArray jsonArray = JSONArray.parseArray(jsonString);

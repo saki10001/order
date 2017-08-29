@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.saki.dao.BaseDaoI;
 import com.saki.entity.Grid;
+import com.saki.model.TCompany;
 import com.saki.model.TOrderDetail;
 import com.saki.model.TOrderMapping;
 import com.saki.model.TProduct;
@@ -98,8 +99,8 @@ public class SupplierOrderServiceImpl implements SupllierOrderServiceI{
 	}
 	@Override
 	public List<Map<String, Object>> searchDetail(String id ) {
-		String hql = "from TProduct t , TProductDetail d, TSupllierOrder o , TSupllierOrderDetail od "
-				+ " where t.id = d.productId  and o.id = od.supllierOrderId and od.productDetailId = d.id   and  o.id = " + id  ;
+		String hql = "from TProduct t , TProductDetail d, TSupllierOrder o , TSupllierOrderDetail od , TCompany c"
+				+ " where t.id = d.productId  and o.id = od.supllierOrderId and od.productDetailId = d.id and c.id=od.conpanyId  and  o.id = " + id  ;
 		List<Object[]> list = supplierOrderDao.find(hql);
 		List<Map<String , Object>>  mapList = new ArrayList<Map<String , Object>>();
 		for (int i = 0; i < list.size(); i++) {
@@ -108,17 +109,20 @@ public class SupplierOrderServiceImpl implements SupllierOrderServiceI{
 			TProduct product = (TProduct) objs[0];
 			TProductDetail detail = (TProductDetail) objs[1];
 			TSupllierOrderDetail oDetail = (TSupllierOrderDetail) objs[3];
+			TCompany company = (TCompany)objs[4];
 			Map<String , Object >  map = new HashMap<String,Object>();
 			map.put("id", oDetail.getId());
 			map.put("product", product.getProduct() );
 			map.put("type",  product.getType());
 			map.put("sub_product", detail.getSubProduct());
 			map.put("materail", detail.getMaterial());
-//			map.put("acount", );
+			map.put("acount", oDetail.getNum());
 			map.put("unit", product.getUnit());
 //			map.put("price",  detail );
 			map.put("detailId", detail.getId());
 			map.put("productId", product.getId());
+			map.put("companyId" ,oDetail.getConpanyId() );
+			map.put("companyName", company.getName());
 			mapList.add(map);
 		}
 		
@@ -137,8 +141,12 @@ public class SupplierOrderServiceImpl implements SupllierOrderServiceI{
 		return list;
 	}
 	@Override
-	public TSupllierOrderDetail getByDetailId(String string) {
-		// TODO Auto-generated method stub
+	public TSupllierOrderDetail getByDetailId(String id) {
+		String  hql = "from TSupllierOrderDetail t where t.id = '" + id + "'";
+		List<TSupllierOrderDetail> list = supplierOrderDao.find(hql);
+		if(list !=null && list.size() > 0 ){
+			return list.get(0);
+		}
 		return null;
 	}
 	@Override
@@ -152,12 +160,20 @@ public class SupplierOrderServiceImpl implements SupllierOrderServiceI{
 		int amount = 0 ;//订单总数
 		List<TOrderMapping> orderMap =  new ArrayList<TOrderMapping>();
 		List<Integer > temp = new ArrayList<Integer >();
-		List<TSupllierOrderDetail>  supOrderDetailList = new ArrayList<TSupllierOrderDetail>();
+		Map<Integer , Integer>  tempMap = new HashMap<Integer, Integer>();
 	    List<TOrderDetail> orderDetailList =  getOrderDetailsForSupplierOrder();
 	    for(TOrderDetail orderDetail : orderDetailList) {
-	    		  	  if(orderDetail.getNum() != null ) {
-	    		  		     amount += orderDetail.getNum();
-	    		  	  }
+		  	  if(orderDetail.getNum() != null ) {
+		  		     amount += orderDetail.getNum();
+		  	  }
+		  	  if(!temp.contains(orderDetail.getOrderId())) {
+	  		    temp.add(orderDetail.getOrderId());
+ 		  	  }
+ 		  	  if(tempMap.containsKey(orderDetail.getProductDetailId())){
+ 		  		  tempMap.put(orderDetail.getProductDetailId(), tempMap.get(orderDetail.getProductDetailId()) + orderDetail.getNum());
+ 		  	  }else{
+ 		  		  tempMap.put(orderDetail.getProductDetailId(), orderDetail.getNum());
+ 		  	  }
 	    }
 	    
 	    /**  插入供应商订单*/
@@ -166,19 +182,15 @@ public class SupplierOrderServiceImpl implements SupllierOrderServiceI{
 	    supOrder.setSupplierOrderNo("S_" + DateUtil.getStringDate());
 	    add(supOrder);
 	    
-	    
-	    
 	    /**插入供应商详情**/
-	    for(TOrderDetail orderDetail : orderDetailList) {
-		  	  if(!temp.contains(orderDetail.getOrderId())) {
-		  		    temp.add(orderDetail.getOrderId());
-		  	  }
+	    for( Map.Entry<Integer, Integer> entry : tempMap.entrySet()) {
 		  	TSupllierOrderDetail  supDetail  = new TSupllierOrderDetail();
-		  	supDetail.setNum(orderDetail.getNum());
-		  	supDetail.setProductDetailId(orderDetail.getProductDetailId());
+		  	supDetail.setNum(entry.getValue());
+		  	supDetail.setProductDetailId(entry.getKey());
 		  	supDetail.setSupllierOrderId(supOrder.getId());
+		  	supDetail.setStatus("1");//原始供应商订单详情，不可删除
 		  	add(supDetail);	
-	    	}
+	    }
 	    
 	    /**插入关系表**/
 	    
@@ -187,6 +199,32 @@ public class SupplierOrderServiceImpl implements SupllierOrderServiceI{
 		String  hql = "from TOrderDetail t ";
 		List<TOrderDetail> list = supplierOrderDao.find(hql);
 		return list;
+	}
+	/**
+	 * 
+	 */
+	@SuppressWarnings("unchecked")
+	@Override
+	public void splitOrder(String id) {
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("id", Integer.valueOf(id));
+		TSupllierOrderDetail detail = (TSupllierOrderDetail) supplierOrderDao.get("from TSupllierOrderDetail t where t.id = :id", params);
+		TSupllierOrderDetail detailCopy = new TSupllierOrderDetail();
+		detailCopy.setSupllierOrderId(detail.getSupllierOrderId());
+		detailCopy.setProductDetailId(detail.getProductDetailId());
+		detailCopy.setStatus("2");//拆分供应商订单详情，可删除
+		detailCopy.setRemark(detail.getRemark());
+		add(detailCopy);
+	}
+	@Override
+	public int deleteDetailById(String orderId, String detailId) {
+		return supplierOrderDao.deleteSupDetailById(orderId , detailId );
+	}
+	@Override
+	public List<TCompany> searchCompany() {
+		 String hql = " from TCompany t where t.roleId =  3 " ;
+		  List<TCompany> list = supplierOrderDao.find(hql);
+		  return list;
 	}
 	
 	

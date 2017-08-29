@@ -171,7 +171,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				pagination: true,
 				fitColumns: true,
 				singleSelect: true,
-				onClickRow: onClickRow,
+				onClickRow: onClickRow,//选中行是，调用onClickRow js方法（397行）
 				toolbar: [{
 					text:'添加',
 					iconCls: 'icon-add',
@@ -354,6 +354,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     			$('#order_dlg').dialog('open');	
     			$('#order_dlg').dialog('setTitle','编辑订单');
 			$("#startDate").val(row.startDate);
+			editIndex = undefined;
 			$('#table_add').datagrid('reload', {
 				 id: $("#id").val()
 			});

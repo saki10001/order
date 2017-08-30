@@ -39,6 +39,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		        <button class="btn btn-default" iconCls="icon-search">按条件查询</button>
 		    </div>
 		  </form>
+	     <div style="text-align: left">
+		 	<button class="btn btn-default" iconCls="icon-search" onclick="getSupOrder()">重新生成供应商订单</button>
+		 </div>
+		
  		<table id="table_order" class="easyui-datagrid" fit="true" ></table>
  		
  		 <div id="company_dlg_buttons" style="width:600px;height: 40px;text-align: center">
@@ -149,7 +153,28 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			   
 			});
 		});
-    	
+    	function getSupOrder(){
+    		   $.messager.confirm(
+       				'提示',
+       				'确定要重新生成供应商订单么?',
+       				function(r) {
+       					if (r) {
+       						$.ajax({ 
+       			    			url: '${pageContext.request.contextPath}/supplier!getSupllierOrder.action',
+       			    			dataType : 'json',
+       			    			success : function(obj){
+       			    				if(obj.success){
+       			    				 	alert(obj.msg);
+       			    				 	$('#table_order').datagrid('reload');
+       			    				}else{
+       			    					alert(obj.msg);
+       			    					$('#table_order').datagrid('reload');
+       			    				}
+       			    			}
+       			    		});
+       					}
+       				});
+    	}
     	var editIndex = undefined;
 		$(function(){
 			$('#table_add').datagrid({
@@ -208,6 +233,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					{field:'detailId', hidden:'true',editor:'textbox' },
 					{field:'productId', hidden:'true',editor:'textbox' },
 					{field:'companyId', hidden:'true',editor:'textbox' },
+					{field:'initnum', hidden:'true',editor:'textbox' },
 					{field:'remark',title:'备注',width:100,align:'center'},
 					{field:'id', hidden:'true',editor:'textbox' }
 				]],
@@ -447,8 +473,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		    			    				 	$('#table_order').datagrid('reload');
 		    			    				}else{
 		    			    					alert(obj.msg);
-		    			    					 $('#order_dlg').dialog('close');	
-		    			    					$('#table_order').datagrid('reload');
 		    			    				}
 		                    }, "JSON");
 		              }

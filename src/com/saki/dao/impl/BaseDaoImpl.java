@@ -7,12 +7,14 @@ import java.util.List;
 import java.util.Map;
 
 import org.hibernate.Query;
+import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.saki.dao.BaseDaoI;
+import com.saki.model.TSupllierOrder;
 
 @Repository("baseDao")
 public class BaseDaoImpl<T> implements BaseDaoI<T> {
@@ -152,5 +154,6 @@ public class BaseDaoImpl<T> implements BaseDaoI<T> {
 					+ detailId + " and t.supllierOrderId = " + orderId  + "and t.status = '2'").executeUpdate();
 		
 	}
+	
 
 }

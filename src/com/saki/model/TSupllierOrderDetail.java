@@ -22,6 +22,7 @@ public class TSupllierOrderDetail implements java.io.Serializable {
 	private Integer supllierOrderId;
 	private Integer productDetailId;
 	private Integer num;
+	private Integer initnum;
 	private double price;
 	private String status;
 	private String remark;
@@ -33,12 +34,13 @@ public class TSupllierOrderDetail implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public TSupllierOrderDetail(Integer conpanyId, Integer supllierOrderId, Integer productDetailId, Integer num,
+	public TSupllierOrderDetail(Integer conpanyId, Integer supllierOrderId, Integer productDetailId, Integer num,Integer initnum,  
 			double price,String status , String remark) {
 		this.conpanyId = conpanyId;
 		this.supllierOrderId = supllierOrderId;
 		this.productDetailId = productDetailId;
 		this.num = num;
+		this.initnum = initnum;
 		this.price = price;
 		this.status = status;
 		this.remark = remark;
@@ -97,6 +99,15 @@ public class TSupllierOrderDetail implements java.io.Serializable {
 
 	public void setNum(Integer num) {
 		this.num = num;
+	}
+
+	@Column(name = "initnum")
+	public Integer getInitnum() {
+		return initnum;
+	}
+
+	public void setInitnum(Integer initnum) {
+		this.initnum = initnum;
 	}
 
 	@Column(name = "price", precision = 10, scale = 3)

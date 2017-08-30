@@ -138,7 +138,7 @@ public class SupplierOrderAction extends BaseAction implements ModelDriven<TSupl
 			int acount =supllierOrderService.deleteDetailById(orderId , detailId);
 			if(acount == 0){
 				j.setSuccess(false);
-				j.setMsg("删除失败");
+				j.setMsg("删除失败,每种产品必须保留一条数据");
 			}else{
 				j.setSuccess(true);
 				j.setMsg("删除成功");
@@ -175,37 +175,41 @@ public class SupplierOrderAction extends BaseAction implements ModelDriven<TSupl
 		 String orderId = getParameter("id");
 		 System.out.println(orderId);
 		 String update = getParameter("updated");
-			 if(StringUtils.isNotEmpty(update)) {
-				   updateDetail(update);
-			 }
-	     Message j = new Message();
-	     j.setSuccess(true);
-	     j.setMsg("保存成功");
+		 String msg = "";
+		 if(StringUtils.isNotEmpty(update)) {
+			msg =  supllierOrderService.updateDetail(update);
+		 }
+		 Message j = new Message();
+		 if(StringUtils.isEmpty(msg)){
+			 j.setSuccess(true);
+			 j.setMsg("保存成功");
+		 }else{
+			 j.setSuccess(false);
+			 j.setMsg(msg);
+		 }
 	     super.writeJson(j);
 	} 
 	
-	
-	
-	public void updateDetail(String update) {
-		JSONArray jsonArr =  JSON.parseArray(update);
-	     //jsonArr.getJSONObject(0);
-	     for(int i = 0 ; i < jsonArr.size() ; i ++) {
-	    	   JSONObject obj = jsonArr.getJSONObject(i);
-	    	   TSupllierOrderDetail detail = new TSupllierOrderDetail();
-	    	   detail = (TSupllierOrderDetail)supllierOrderService.getByDetailId(obj.getString("id"));
-	    	   if(detail != null) {
-	    		   detail.setNum(StringUtils.isEmpty(obj.getString("acount")) ? 0 : obj.getIntValue("acount"));
-	    		   detail.setConpanyId(StringUtils.isEmpty(obj.getString("companyId")) ? 0 : obj.getIntValue("companyId"));
-	    		   supllierOrderService.update(detail);
-	    	   }
-	     }
-	}
 	
 	public void getCompany(){
 		List<TCompany>  list = supllierOrderService.searchCompany();
 		String jsonString = JSON.toJSONString(list);
 		JSONArray jsonArray = JSONArray.parseArray(jsonString);
 		super.writeJson(jsonArray);
+	}
+	
+	public void getSupllierOrder(){
+		Message j = new Message();
+		try {
+			supllierOrderService.getSupllierOrder();
+			j.setSuccess(true);
+			j.setMsg("操作成功");
+		} catch (Exception e) {
+			e.printStackTrace();
+			j.setSuccess(false);
+			j.setMsg("操作失败");
+		}
+		super.writeJson(j);
 	}
 	
 	

@@ -34,4 +34,5 @@ public interface BaseDaoI<T> {
 	public Long count(String hql, Map<String, Object> params);
 
 	public int deleteSupDetailById(String orderId, String detailId);
+	
 }

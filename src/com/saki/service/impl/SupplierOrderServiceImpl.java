@@ -6,9 +6,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.xwork.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.saki.dao.BaseDaoI;
 import com.saki.entity.Grid;
 import com.saki.model.TCompany;
@@ -99,8 +103,8 @@ public class SupplierOrderServiceImpl implements SupllierOrderServiceI{
 	}
 	@Override
 	public List<Map<String, Object>> searchDetail(String id ) {
-		String hql = "from TProduct t , TProductDetail d, TSupllierOrder o , TSupllierOrderDetail od , TCompany c"
-				+ " where t.id = d.productId  and o.id = od.supllierOrderId and od.productDetailId = d.id and c.id=od.conpanyId  and  o.id = " + id  ;
+		String hql = "from TProduct t , TProductDetail d, TSupllierOrder o , TSupllierOrderDetail od "
+				+ " where t.id = d.productId  and o.id = od.supllierOrderId and od.productDetailId = d.id  and  o.id = " + id  ;
 		List<Object[]> list = supplierOrderDao.find(hql);
 		List<Map<String , Object>>  mapList = new ArrayList<Map<String , Object>>();
 		for (int i = 0; i < list.size(); i++) {
@@ -109,7 +113,6 @@ public class SupplierOrderServiceImpl implements SupllierOrderServiceI{
 			TProduct product = (TProduct) objs[0];
 			TProductDetail detail = (TProductDetail) objs[1];
 			TSupllierOrderDetail oDetail = (TSupllierOrderDetail) objs[3];
-			TCompany company = (TCompany)objs[4];
 			Map<String , Object >  map = new HashMap<String,Object>();
 			map.put("id", oDetail.getId());
 			map.put("product", product.getProduct() );
@@ -121,13 +124,58 @@ public class SupplierOrderServiceImpl implements SupllierOrderServiceI{
 //			map.put("price",  detail );
 			map.put("detailId", detail.getId());
 			map.put("productId", product.getId());
-			map.put("companyId" ,oDetail.getConpanyId() );
-			map.put("companyName", company.getName());
+			map.put("initnum", oDetail.getInitnum());
+			if(oDetail.getConpanyId()  != null  && oDetail.getConpanyId()  > 0){
+				map.put("companyId" ,oDetail.getConpanyId() );
+				String hqlCompany = "from TCompany  t where t.id = " + oDetail.getConpanyId() ;
+				TCompany company = (TCompany)supplierOrderDao.get(hqlCompany);
+				map.put("companyName",company.getName() );
+			}
 			mapList.add(map);
 		}
 		
 		return mapList ;
 	}
+	
+	public String updateDetail(String update) {
+		JSONArray jsonArr =  JSON.parseArray(update);
+		String msg = "";
+		Map<Integer , Integer>  initMap = new HashMap<Integer , Integer>();
+		Map<Integer , Integer>  updateMap = new HashMap<Integer , Integer>();
+		 for(int i = 0 ; i < jsonArr.size() ; i ++) {
+	    	   JSONObject obj = jsonArr.getJSONObject(i);
+	    	   if(StringUtils.isEmpty(obj.getString("acount"))){
+	    		     return msg += "订单数量不能为空";
+	    	   }
+	    	   if(StringUtils.isNotEmpty(obj.getString("initnum")) && !initMap.containsKey(obj.getIntValue("detailId"))){
+	    		   initMap.put( obj.getIntValue("detailId"), obj.getIntValue("initnum"));
+	    	   }
+	    	   if(!updateMap.containsKey(obj.getIntValue("detailId"))){
+	    		   updateMap.put(obj.getIntValue("detailId"), obj.getIntValue("acount"));
+	    	   }else{
+	    		   updateMap.put(obj.getIntValue("detailId"), obj.getIntValue("acount") + updateMap.get(obj.getIntValue("detailId")) ); 
+	    	   }
+	     }
+		 for(Map.Entry<Integer, Integer> entry : initMap.entrySet()){
+			  if(!entry.getValue().equals(updateMap.get(entry.getKey()))){
+				  return msg += "订单数量与原始订单数量不同，请核对";  
+			  }
+		 }
+	     //jsonArr.getJSONObject(0);
+	     for(int i = 0 ; i < jsonArr.size() ; i ++) {
+	    	   JSONObject obj = jsonArr.getJSONObject(i);
+	    	   TSupllierOrderDetail detail = new TSupllierOrderDetail();
+	    	   detail = (TSupllierOrderDetail)getByDetailId(obj.getString("id"));
+	    	   if(detail != null) {
+	    		   detail.setNum(StringUtils.isEmpty(obj.getString("acount")) ? 0 : obj.getIntValue("acount"));
+	    		   detail.setConpanyId(StringUtils.isEmpty(obj.getString("companyId")) ? 0 : obj.getIntValue("companyId"));
+	    		   update(detail);
+	    	   }
+	     }
+	     
+	     return msg ;
+	}
+	
 	@Override
 	public List<TProduct> searchProduct() {
 		  String hql = "select distinct  new TProduct(product , unit) from TProduct  " ;
@@ -186,6 +234,7 @@ public class SupplierOrderServiceImpl implements SupllierOrderServiceI{
 	    for( Map.Entry<Integer, Integer> entry : tempMap.entrySet()) {
 		  	TSupllierOrderDetail  supDetail  = new TSupllierOrderDetail();
 		  	supDetail.setNum(entry.getValue());
+		  	supDetail.setInitnum(entry.getValue());
 		  	supDetail.setProductDetailId(entry.getKey());
 		  	supDetail.setSupllierOrderId(supOrder.getId());
 		  	supDetail.setStatus("1");//原始供应商订单详情，不可删除

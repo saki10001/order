@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50528
 File Encoding         : 65001
 
-Date: 2017-08-29 17:32:43
+Date: 2017-08-30 17:17:00
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -170,13 +170,16 @@ CREATE TABLE `t_supllier_order` (
   `amount` decimal(10,5) DEFAULT NULL COMMENT '订单总价',
   `remark` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=57 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of t_supllier_order
 -- ----------------------------
 INSERT INTO `t_supllier_order` VALUES ('1', 'S_2017-08-29 13:40:03', null, '0', '1261.00000', null);
 INSERT INTO `t_supllier_order` VALUES ('2', 'S_2017-08-29 13:54:23', null, '2', '1261.00000', null);
+INSERT INTO `t_supllier_order` VALUES ('3', 'S_2017-08-30 15:28:15', null, '0', '1261.00000', null);
+INSERT INTO `t_supllier_order` VALUES ('4', 'S_2017-08-30 15:29:44', null, '0', '1261.00000', null);
+INSERT INTO `t_supllier_order` VALUES ('5', 'S_2017-08-30 15:50:25', null, '2', '1261.00000', null);
 
 -- ----------------------------
 -- Table structure for t_supllier_order_detail
@@ -188,21 +191,29 @@ CREATE TABLE `t_supllier_order_detail` (
   `supllier_order_id` int(10) DEFAULT NULL COMMENT '供应商订单ID',
   `product_detail_id` int(10) DEFAULT NULL COMMENT '产品分类id',
   `num` int(10) DEFAULT NULL COMMENT '订单数量',
+  `initnum` int(11) DEFAULT NULL,
   `price` decimal(10,3) DEFAULT NULL COMMENT '供应商报价',
   `status` varchar(1) DEFAULT NULL COMMENT '标注是否为主数据  1代表主数据不可删除，2代表拆分订单，可删除',
   `remark` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=227 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of t_supllier_order_detail
 -- ----------------------------
-INSERT INTO `t_supllier_order_detail` VALUES ('1', null, '1', '2', '111', '0.000', null, null);
-INSERT INTO `t_supllier_order_detail` VALUES ('2', null, '1', '2', '100', '0.000', null, null);
-INSERT INTO `t_supllier_order_detail` VALUES ('3', null, '1', '7', '1000', '0.000', null, null);
-INSERT INTO `t_supllier_order_detail` VALUES ('4', null, '1', '2', '50', '0.000', '1', null);
-INSERT INTO `t_supllier_order_detail` VALUES ('5', '15', '2', '2', '261', '0.000', '1', null);
-INSERT INTO `t_supllier_order_detail` VALUES ('6', '15', '2', '7', '1000', '0.000', '1', null);
+INSERT INTO `t_supllier_order_detail` VALUES ('1', '0', '1', '2', '111', null, '0.000', null, null);
+INSERT INTO `t_supllier_order_detail` VALUES ('2', null, '1', '2', '100', null, '0.000', null, null);
+INSERT INTO `t_supllier_order_detail` VALUES ('3', null, '1', '7', '1000', null, '0.000', null, null);
+INSERT INTO `t_supllier_order_detail` VALUES ('4', null, '1', '2', '50', null, '0.000', '1', null);
+INSERT INTO `t_supllier_order_detail` VALUES ('5', '15', '2', '2', '261', null, '0.000', '1', null);
+INSERT INTO `t_supllier_order_detail` VALUES ('6', '15', '2', '7', '1000', null, '0.000', '1', null);
+INSERT INTO `t_supllier_order_detail` VALUES ('7', null, '3', '2', '261', '261', '0.000', '1', null);
+INSERT INTO `t_supllier_order_detail` VALUES ('8', null, '3', '7', '1000', '1000', '0.000', '1', null);
+INSERT INTO `t_supllier_order_detail` VALUES ('9', null, '4', '2', '261', '261', '0.000', '1', null);
+INSERT INTO `t_supllier_order_detail` VALUES ('10', null, '4', '7', '1000', '1000', '0.000', '1', null);
+INSERT INTO `t_supllier_order_detail` VALUES ('11', null, '5', '2', '261', '261', '0.000', '1', null);
+INSERT INTO `t_supllier_order_detail` VALUES ('12', null, '5', '7', '1000', '1000', '0.000', '1', null);
+INSERT INTO `t_supllier_order_detail` VALUES ('13', null, '5', '7', null, null, '0.000', '2', null);
 
 -- ----------------------------
 -- Table structure for t_user

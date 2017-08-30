@@ -24,28 +24,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
  		<h3>订单管理</h3>
  	</div>
  	<div data-options="region:'center',border:false,showHeader:false" style="padding-bottom: 20px">
-		 	<form name="searchform" method="post" action="" id ="searchform">
-		    <div ><strong>专家检索：</strong></div>
-		    <div >
-		        <input type="text" name="keyword" size=20 >
-		        <select name="search_type" id="search_type" >
-		            <option value="-1">请选择搜索类型</option>
-		            <option value="be_name" >按专家姓名</option>
-		            <option value="be_intro">按专家简介</option>
-		        </select>
-		        <select name="search_dept" id="search_dept">
-		            <option value="-1">请选择所属科室</option>
-		        </select>
-		        <button class="btn btn-default" iconCls="icon-search">按条件查询</button>
-		    </div>
-		  </form>
- 		<table id="table_order" class="easyui-datagrid" fit="true" ></table>
- 		
- 		 <div id="company_dlg_buttons" style="width:600px;height: 40px;text-align: center">
-			<button id="company_save" type="button" class="btn btn-primary btn-dialog-left">保存</button>
-			<button onclick="company_close()" type="button" class="btn btn-default btn-dialog-right">取消</button>
-		</div>
-		<div  id="order_dlg" closed="true" class="easyui-dialog" style="width:800px;height: 450px"
+ 				<table id="table_order" class="easyui-datagrid" fit="true" ></table>
+ 	</div>
+ 	<div  id="order_dlg" closed="true" class="easyui-dialog" style="width:800px;height: 450px"
 			data-options="border:'thin',cls:'c1',collapsible:false,modal:true,closable:false,top:10,buttons: '#company_dlg_buttons'">
 		    	<form id="order_form" role="form" style="padding: 20px">
 				<input type="hidden"  id = "id"  name = "id">
@@ -58,13 +39,12 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		                <input name="startDate" id = "startDate" class="easyui-datebox" style="display: inline-block;width: 30%">
 		        </div>
 		    	</form>   
-		    	
-		    	<table id="table_add" class="easyui-datagrid" fit="true" >
-	 			
-	 		</table>              
+			    	<table id="table_add" class="easyui-datagrid" fit="true" ></table>              
 		</div>
- 	</div>
-	
+	<div id="company_dlg_buttons" style="width:600px;height: 40px;text-align: center">
+			<button id="company_save" type="button" class="btn btn-primary btn-dialog-left">保存</button>
+			<button onclick="company_close()" type="button" class="btn btn-default btn-dialog-right">取消</button>
+		</div>
     <script type="text/javascript">
     	$(function(){
     		
@@ -165,126 +145,248 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		});
     	
     	var editIndex = undefined;
-		$(function(){
-			$('#table_add').datagrid({
-				url:'${pageContext.request.contextPath}/orderAction!searchDetail.action' ,
-				pagination: true,
-				fitColumns: true,
-				singleSelect: true,
-				onClickRow: onClickRow,//选中行是，调用onClickRow js方法（397行）
-				toolbar: [{
-					text:'添加',
-					iconCls: 'icon-add',
-					handler: function(){append();}
-				},'-',{
-					text:'删除',
-					iconCls: 'icon-remove',
-					handler: function(){removeit();}
-				}/*  ,'-',{
-					text:'保存',
-					iconCls: 'icon-save',
-					handler: function(){accept();}
-				} */ ,'-',{
-					text:'取消',
-					iconCls: 'icon-undo',
-					handler: function(){reject();}
-				},'-',{
-					text:'提交',
-					iconCls: 'icon-ok',
-					handler: function(){submitData();}
-				}],
-				columns:[[
-					{field:'product',title:'产品大类',width:100,align:'center',
-						editor : {    
-	                        type : 'combobox',    
-	                        options : {    
-	                            url:'${pageContext.request.contextPath}/orderAction!getProduct.action',  
-	                            valueField:'product' ,   
-	                            textField:'product',  
-	                            onSelect:function(data){  
-	                                var row = $('#table_add').datagrid('getSelected');  
-	                                var rowIndex = $('#table_add').datagrid('getRowIndex',row);//获取行号  
-	                                 var ed = $("#table_add").datagrid('getEditor', {  
+
+    	$(function(){
+    		   if(${roleId} == '3'){
+				$('#table_add').datagrid({
+					url:'${pageContext.request.contextPath}/orderAction!searchDetail.action' ,
+					pagination: true,
+					fitColumns: true,
+					singleSelect: true,
+					onClickRow: onClickRow,//选中行是，调用onClickRow js方法（397行）
+					toolbar: [{
+						text:'添加',
+						iconCls: 'icon-add',
+						handler: function(){append();}
+					},'-',{
+						text:'删除',
+						iconCls: 'icon-remove',
+						handler: function(){removeit();}
+					}/*  ,'-',{
+						text:'保存',
+						iconCls: 'icon-save',
+						handler: function(){accept();}
+					} */ ,'-',{
+						text:'取消',
+						iconCls: 'icon-undo',
+						handler: function(){reject();}
+					},'-',{
+						text:'提交',
+						iconCls: 'icon-ok',
+						handler: function(){submitData();}
+					}],
+					columns:[[
+						{field:'product',title:'产品大类',width:100,align:'center',
+							editor : {    
+		                        type : 'combobox',    
+		                        options : {    
+		                            url:'${pageContext.request.contextPath}/orderAction!getProduct.action',  
+		                            valueField:'product' ,   
+		                            textField:'product',  
+		                            onSelect:function(data){  
+		                                var row = $('#table_add').datagrid('getSelected');  
+		                                var rowIndex = $('#table_add').datagrid('getRowIndex',row);//获取行号  
+		                                 var ed = $("#table_add").datagrid('getEditor', {  
+		                                        index : rowIndex,  
+		                                        field : 'unit'  
+		                                    });  
+		                                $(ed.target).textbox('setValue',  data.unit);   
+		                                var thisTarget = $('#table_add').datagrid('getEditor', {'index':rowIndex,'field':'product'}).target;  
+		                                var value = thisTarget.combobox('getValue');  
+		                                var target = $('#table_add').datagrid('getEditor', {'index':rowIndex,'field':'type'}).target;  
+		                                target.combobox('clear'); //清除原来的数据  
+		                                var subtarget = $('#table_add').datagrid('getEditor', {'index':rowIndex,'field':'sub_product'}).target;  
+		                                subtarget.combobox('clear');
+		                                var url = '${pageContext.request.contextPath}/orderAction!getProductType.action?product='+data.product;  
+		                                target.combobox('reload', url);//联动下拉列表重载   */
+		                            }  
+		                        }    
+		                    	}/* ,
+							formatter : function (value, row, index) {
+				                   
+				                    return row.materail;
+				                } */
+						},
+						{field:'type',title:'产品类型',width:100,align:'center',
+							editor : {    
+		                        type : 'combobox',    
+		                        options : {    
+		                           // url:'${pageContext.request.contextPath}/orderAction!getProduct.action',  
+		                            valueField:'type' ,   
+		                            textField:'type',  
+		                            onSelect:function(data){  
+		                                var row = $('#table_add').datagrid('getSelected');  
+		                                var rowIndex = $('#table_add').datagrid('getRowIndex',row);//获取行号  
+		                                var thisTarget = $('#table_add').datagrid('getEditor', {'index':rowIndex,'field':'type'}).target;  
+		                                var value = thisTarget.combobox('getValue');  
+		                                var idvalue = $("#table_add").datagrid('getEditor', {  
 	                                        index : rowIndex,  
-	                                        field : 'unit'  
+	                                        field : 'productId'  
 	                                    });  
-	                                $(ed.target).textbox('setValue',  data.unit);   
-	                                var thisTarget = $('#table_add').datagrid('getEditor', {'index':rowIndex,'field':'product'}).target;  
-	                                var value = thisTarget.combobox('getValue');  
-	                                var target = $('#table_add').datagrid('getEditor', {'index':rowIndex,'field':'type'}).target;  
-	                                target.combobox('clear'); //清除原来的数据  
-	                                var subtarget = $('#table_add').datagrid('getEditor', {'index':rowIndex,'field':'sub_product'}).target;  
-	                                subtarget.combobox('clear');
-	                                var url = '${pageContext.request.contextPath}/orderAction!getProductType.action?product='+data.product;  
-	                                target.combobox('reload', url);//联动下拉列表重载   */
-	                            }  
-	                        }    
-	                    	}/* ,
-						formatter : function (value, row, index) {
-			                   
-			                    return row.materail;
-			                } */
-					},
-					{field:'type',title:'产品类型',width:100,align:'center',
-						editor : {    
-	                        type : 'combobox',    
-	                        options : {    
-	                           // url:'${pageContext.request.contextPath}/orderAction!getProduct.action',  
-	                            valueField:'type' ,   
-	                            textField:'type',  
-	                            onSelect:function(data){  
-	                                var row = $('#table_add').datagrid('getSelected');  
-	                                var rowIndex = $('#table_add').datagrid('getRowIndex',row);//获取行号  
-	                                var thisTarget = $('#table_add').datagrid('getEditor', {'index':rowIndex,'field':'type'}).target;  
-	                                var value = thisTarget.combobox('getValue');  
-	                                var idvalue = $("#table_add").datagrid('getEditor', {  
-                                        index : rowIndex,  
-                                        field : 'productId'  
-                                    });  
-                                $(idvalue.target).textbox('setValue',  data.id ); 
-	                                var target = $('#table_add').datagrid('getEditor', {'index':rowIndex,'field':'sub_product'}).target;  
-	                                target.combobox('clear'); //清除原来的数据  
-	                                var url = '${pageContext.request.contextPath}/orderAction!getProductDetail.action?productId='+data.id;  
-	                                target.combobox('reload', url);//联动下拉列表重载   
-	                            }  
-	                        }    
-	                    	}
-					},
-					{field:'sub_product',title:'产品规格',width:100,align:'center',
-						editor : {    
-	                        type : 'combobox',    
-	                        options : {    
-	                           // url:'${pageContext.request.contextPath}/orderAction!getProduct.action',  
-	                            valueField:'subProduct' ,   
-	                            textField:'subProduct',  
-	                            onSelect:function(data){  
-	                                var row = $('#table_add').datagrid('getSelected');  
-	                                var rowIndex = $('#table_add').datagrid('getRowIndex',row);//获取行号  
-	                                 var ed = $("#table_add").datagrid('getEditor', {  
+	                                $(idvalue.target).textbox('setValue',  data.id ); 
+		                                var target = $('#table_add').datagrid('getEditor', {'index':rowIndex,'field':'sub_product'}).target;  
+		                                target.combobox('clear'); //清除原来的数据  
+		                                var url = '${pageContext.request.contextPath}/orderAction!getProductDetail.action?productId='+data.id;  
+		                                target.combobox('reload', url);//联动下拉列表重载   
+		                            }  
+		                        }    
+		                    	}
+						},
+						{field:'sub_product',title:'产品规格',width:100,align:'center',
+							editor : {    
+		                        type : 'combobox',    
+		                        options : {    
+		                           // url:'${pageContext.request.contextPath}/orderAction!getProduct.action',  
+		                            valueField:'subProduct' ,   
+		                            textField:'subProduct',  
+		                            onSelect:function(data){  
+		                                var row = $('#table_add').datagrid('getSelected');  
+		                                var rowIndex = $('#table_add').datagrid('getRowIndex',row);//获取行号  
+		                                 var ed = $("#table_add").datagrid('getEditor', {  
+		                                        index : rowIndex,  
+		                                        field : 'materail'  
+		                                    });  
+		                                $(ed.target).textbox('setValue',  data.material); 
+		                                $(ed.target).combobox('disable');
+		                                var idvalue = $("#table_add").datagrid('getEditor', {  
 	                                        index : rowIndex,  
-	                                        field : 'materail'  
+	                                        field : 'detailId'  
 	                                    });  
-	                                $(ed.target).textbox('setValue',  data.material); 
-	                                $(ed.target).combobox('disable');
-	                                var idvalue = $("#table_add").datagrid('getEditor', {  
-                                        index : rowIndex,  
-                                        field : 'detailId'  
-                                    });  
-                                $(idvalue.target).textbox('setValue',  data.id );   
-	                            }  
-	                        }    
-	                    	}},
-					{field:'materail',title:'材质',width:100,align:'center',editor:'textbox'},
-					{field:'acount',title:'数量',width:100,align:'center',editor:'textbox'},
-					{field:'unit',title:'单位',width:100,align:'center',editor:'textbox'},
-					{field:'price',title:'单价',width:100,align:'center',editor:'textbox'},
-					{field:'detailId', hidden:'true',editor:'textbox' },
-					{field:'productId', hidden:'true',editor:'textbox' },
-					{field:'remark',title:'备注',width:100,align:'center',editor:'textbox'},
-					{field:'id', hidden:'true',editor:'textbox' }
-				]],
-				
-			});
+	                                $(idvalue.target).textbox('setValue',  data.id );   
+		                            }  
+		                        }    
+		                    	}},
+						{field:'materail',title:'材质',width:100,align:'center',editor:'textbox'},
+						{field:'acount',title:'数量',width:100,align:'center',editor:'textbox'},
+						{field:'unit',title:'单位',width:100,align:'center',editor:'textbox'},
+						{field:'detailId', hidden:'true',editor:'textbox' },
+						{field:'productId', hidden:'true',editor:'textbox' },
+						{field:'remark',title:'备注',width:100,align:'center',editor:'textbox'},
+						{field:'id', hidden:'true',editor:'textbox' }
+					]],
+					
+				});
+    		   }else if(${roleId} == '1'){
+    			   $('#table_add').datagrid({
+   					url:'${pageContext.request.contextPath}/orderAction!searchDetail.action' ,
+   					pagination: true,
+   					fitColumns: true,
+   					singleSelect: true,
+   					onClickRow: onClickRow,//选中行是，调用onClickRow js方法（397行）
+   					toolbar: [{
+   						text:'添加',
+   						iconCls: 'icon-add',
+   						handler: function(){append();}
+   					},'-',{
+   						text:'删除',
+   						iconCls: 'icon-remove',
+   						handler: function(){removeit();}
+   					}/*  ,'-',{
+   						text:'保存',
+   						iconCls: 'icon-save',
+   						handler: function(){accept();}
+   					} */ ,'-',{
+   						text:'取消',
+   						iconCls: 'icon-undo',
+   						handler: function(){reject();}
+   					},'-',{
+   						text:'提交',
+   						iconCls: 'icon-ok',
+   						handler: function(){submitData();}
+   					}],
+   					columns:[[
+   						{field:'product',title:'产品大类',width:100,align:'center',
+   							editor : {    
+   		                        type : 'combobox',    
+   		                        options : {    
+   		                            url:'${pageContext.request.contextPath}/orderAction!getProduct.action',  
+   		                            valueField:'product' ,   
+   		                            textField:'product',  
+   		                            onSelect:function(data){  
+   		                                var row = $('#table_add').datagrid('getSelected');  
+   		                                var rowIndex = $('#table_add').datagrid('getRowIndex',row);//获取行号  
+   		                                 var ed = $("#table_add").datagrid('getEditor', {  
+   		                                        index : rowIndex,  
+   		                                        field : 'unit'  
+   		                                    });  
+   		                                $(ed.target).textbox('setValue',  data.unit);   
+   		                                var thisTarget = $('#table_add').datagrid('getEditor', {'index':rowIndex,'field':'product'}).target;  
+   		                                var value = thisTarget.combobox('getValue');  
+   		                                var target = $('#table_add').datagrid('getEditor', {'index':rowIndex,'field':'type'}).target;  
+   		                                target.combobox('clear'); //清除原来的数据  
+   		                                var subtarget = $('#table_add').datagrid('getEditor', {'index':rowIndex,'field':'sub_product'}).target;  
+   		                                subtarget.combobox('clear');
+   		                                var url = '${pageContext.request.contextPath}/orderAction!getProductType.action?product='+data.product;  
+   		                                target.combobox('reload', url);//联动下拉列表重载   */
+   		                            }  
+   		                        }    
+   		                    	}/* ,
+   							formatter : function (value, row, index) {
+   				                   
+   				                    return row.materail;
+   				                } */
+   						},
+   						{field:'type',title:'产品类型',width:100,align:'center',
+   							editor : {    
+   		                        type : 'combobox',    
+   		                        options : {    
+   		                           // url:'${pageContext.request.contextPath}/orderAction!getProduct.action',  
+   		                            valueField:'type' ,   
+   		                            textField:'type',  
+   		                            onSelect:function(data){  
+   		                                var row = $('#table_add').datagrid('getSelected');  
+   		                                var rowIndex = $('#table_add').datagrid('getRowIndex',row);//获取行号  
+   		                                var thisTarget = $('#table_add').datagrid('getEditor', {'index':rowIndex,'field':'type'}).target;  
+   		                                var value = thisTarget.combobox('getValue');  
+   		                                var idvalue = $("#table_add").datagrid('getEditor', {  
+   	                                        index : rowIndex,  
+   	                                        field : 'productId'  
+   	                                    });  
+   	                                $(idvalue.target).textbox('setValue',  data.id ); 
+   		                                var target = $('#table_add').datagrid('getEditor', {'index':rowIndex,'field':'sub_product'}).target;  
+   		                                target.combobox('clear'); //清除原来的数据  
+   		                                var url = '${pageContext.request.contextPath}/orderAction!getProductDetail.action?productId='+data.id;  
+   		                                target.combobox('reload', url);//联动下拉列表重载   
+   		                            }  
+   		                        }    
+   		                    	}
+   						},
+   						{field:'sub_product',title:'产品规格',width:100,align:'center',
+   							editor : {    
+   		                        type : 'combobox',    
+   		                        options : {    
+   		                           // url:'${pageContext.request.contextPath}/orderAction!getProduct.action',  
+   		                            valueField:'subProduct' ,   
+   		                            textField:'subProduct',  
+   		                            onSelect:function(data){  
+   		                                var row = $('#table_add').datagrid('getSelected');  
+   		                                var rowIndex = $('#table_add').datagrid('getRowIndex',row);//获取行号  
+   		                                 var ed = $("#table_add").datagrid('getEditor', {  
+   		                                        index : rowIndex,  
+   		                                        field : 'materail'  
+   		                                    });  
+   		                                $(ed.target).textbox('setValue',  data.material); 
+   		                                $(ed.target).combobox('disable');
+   		                                var idvalue = $("#table_add").datagrid('getEditor', {  
+   	                                        index : rowIndex,  
+   	                                        field : 'detailId'  
+   	                                    });  
+   	                                $(idvalue.target).textbox('setValue',  data.id );   
+   		                            }  
+   		                        }    
+   		                    	}},
+   						{field:'materail',title:'材质',width:100,align:'center',editor:'textbox'},
+   						{field:'acount',title:'数量',width:100,align:'center',editor:'textbox'},
+   						{field:'unit',title:'单位',width:100,align:'center',editor:'textbox'},
+   						{field:'price',title:'单价',width:100,align:'center',editor:'textbox'},
+   						{field:'detailId', hidden:'true',editor:'textbox' },
+   						{field:'productId', hidden:'true',editor:'textbox' },
+   						{field:'remark',title:'备注',width:100,align:'center',editor:'textbox'},
+   						{field:'id', hidden:'true',editor:'textbox' }
+   					]],
+   					
+   				});
+    		   }
 			//$("#table_add").datagrid("hideColumn","amount");
 		});
     	

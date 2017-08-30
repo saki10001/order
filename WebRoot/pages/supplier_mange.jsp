@@ -459,7 +459,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		                    effectRow["formData"] = data;
 		                    if (inserted.length) { 
 		                        effectRow["inserted"] = JSON.stringify(inserted);  
-		                    }  
+		                    }  ;
 		                    if (deleted.length) {  
 		                        effectRow["deleted"] = JSON.stringify(deleted);  
 		                    }  

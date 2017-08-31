@@ -101,10 +101,32 @@ public class SupplierOrderServiceImpl implements SupllierOrderServiceI{
 		}	
 		return grid;
 	}
+	
 	@Override
-	public List<Map<String, Object>> searchDetail(String id ) {
+	public Grid searchBycompanyId(String row, String text, String sort, String order, String page, String rows) {
+		Grid grid = new Grid();
+		Map<String, Object> params = new HashMap<String, Object>();		
+		String hql = "from TSupllierOrder t  where  id in (select supllierOrderId  from TSupllierOrderDetail d where d.conpanyId = " + text + " ) ";
+		if(sort!=null && order!=null){
+			hql = hql + " order by t." + sort + " " + order;
+		}	
+		List<TSupllierOrder> l = supplierOrderDao.find(hql);
+		grid.setTotal(l.size());
+		if(page!=null && rows !=null){
+			List<TSupllierOrder> lp = supplierOrderDao.find(hql, Integer.valueOf(page),  Integer.valueOf(rows));
+			grid.setRows(lp);
+		}else{
+			grid.setRows(l);
+		}	
+		return grid;
+	}
+	@Override
+	public List<Map<String, Object>> searchDetail(String id  , String   companyId) {
 		String hql = "from TProduct t , TProductDetail d, TSupllierOrder o , TSupllierOrderDetail od "
 				+ " where t.id = d.productId  and o.id = od.supllierOrderId and od.productDetailId = d.id  and  o.id = " + id  ;
+		if(StringUtils.isNotEmpty(companyId)){
+			 hql += " and od.conpanyId = " + companyId ;
+		}
 		List<Object[]> list = supplierOrderDao.find(hql);
 		List<Map<String , Object>>  mapList = new ArrayList<Map<String , Object>>();
 		for (int i = 0; i < list.size(); i++) {
@@ -121,7 +143,7 @@ public class SupplierOrderServiceImpl implements SupllierOrderServiceI{
 			map.put("materail", detail.getMaterial());
 			map.put("acount", oDetail.getNum());
 			map.put("unit", product.getUnit());
-//			map.put("price",  detail );
+			map.put("price",  oDetail.getPrice() );
 			map.put("detailId", detail.getId());
 			map.put("productId", product.getId());
 			map.put("initnum", oDetail.getInitnum());
@@ -145,7 +167,11 @@ public class SupplierOrderServiceImpl implements SupllierOrderServiceI{
 		 for(int i = 0 ; i < jsonArr.size() ; i ++) {
 	    	   JSONObject obj = jsonArr.getJSONObject(i);
 	    	   if(StringUtils.isEmpty(obj.getString("acount"))){
-	    		     return msg += "订单数量不能为空";
+	    		     return msg += "第 "  + (i + 1) + "行订单数量不能为空";
+	    	   }
+	    	   if(StringUtils.isEmpty(obj.getString("companyId"))){
+	    		     return msg += "第 "  + (i + 1) + "行供应商不能为空";
+	    		   
 	    	   }
 	    	   if(StringUtils.isNotEmpty(obj.getString("initnum")) && !initMap.containsKey(obj.getIntValue("detailId"))){
 	    		   initMap.put( obj.getIntValue("detailId"), obj.getIntValue("initnum"));
@@ -173,6 +199,30 @@ public class SupplierOrderServiceImpl implements SupllierOrderServiceI{
 	    	   }
 	     }
 	     
+	     return msg ;
+	}
+	
+	@Override
+	public String updateSupllierPrice(String update) {
+		JSONArray jsonArr =  JSON.parseArray(update);
+		String msg = "";
+		 for(int i = 0 ; i < jsonArr.size() ; i ++) {
+	    	   JSONObject obj = jsonArr.getJSONObject(i);
+	    	   if(StringUtils.isEmpty(obj.getString("price"))){
+	    		     return msg += "第 "  + (i + 1) + "行单价不能为空";
+	    		   
+	    	   }
+	     }
+	     //jsonArr.getJSONObject(0);
+	     for(int i = 0 ; i < jsonArr.size() ; i ++) {
+	    	   JSONObject obj = jsonArr.getJSONObject(i);
+	    	   TSupllierOrderDetail detail = new TSupllierOrderDetail();
+	    	   detail = (TSupllierOrderDetail)getByDetailId(obj.getString("id"));
+	    	   if(detail != null) {
+	    		   detail.setPrice(StringUtils.isEmpty(obj.getString("price")) ? 0 : obj.getIntValue("price"));
+	    		   update(detail);
+	    	   }
+	     }
 	     return msg ;
 	}
 	
@@ -207,16 +257,19 @@ public class SupplierOrderServiceImpl implements SupllierOrderServiceI{
 		TSupllierOrder supOrder = new TSupllierOrder();
 		int amount = 0 ;//订单总数
 		List<TOrderMapping> orderMap =  new ArrayList<TOrderMapping>();
-		List<Integer > temp = new ArrayList<Integer >();
+		List<Integer > orderList = new ArrayList<Integer >();
 		Map<Integer , Integer>  tempMap = new HashMap<Integer, Integer>();
 	    List<TOrderDetail> orderDetailList =  getOrderDetailsForSupplierOrder();
 	    for(TOrderDetail orderDetail : orderDetailList) {
+	    		//计算订单总数
 		  	  if(orderDetail.getNum() != null ) {
 		  		     amount += orderDetail.getNum();
 		  	  }
-		  	  if(!temp.contains(orderDetail.getOrderId())) {
-	  		    temp.add(orderDetail.getOrderId());
+		  	  
+		  	  if(!orderList.contains(orderDetail.getOrderId())) {
+		  		orderList.add(orderDetail.getOrderId());
  		  	  }
+		  	  //对不同产品进行分类
  		  	  if(tempMap.containsKey(orderDetail.getProductDetailId())){
  		  		  tempMap.put(orderDetail.getProductDetailId(), tempMap.get(orderDetail.getProductDetailId()) + orderDetail.getNum());
  		  	  }else{
@@ -242,6 +295,12 @@ public class SupplierOrderServiceImpl implements SupllierOrderServiceI{
 	    }
 	    
 	    /**插入关系表**/
+	    for(Integer orderId :  orderList){
+	    	 TOrderMapping mapping = new TOrderMapping();
+	    	 mapping.setOrderId(orderId);
+	    	 mapping.setSuppilerOrderId(supOrder.getId());
+	    	 add(mapping);
+	    }
 	    
 	}
 	private List<TOrderDetail> getOrderDetailsForSupplierOrder() {
@@ -271,7 +330,7 @@ public class SupplierOrderServiceImpl implements SupllierOrderServiceI{
 	}
 	@Override
 	public List<TCompany> searchCompany() {
-		 String hql = " from TCompany t where t.roleId =  3 " ;
+		 String hql = " from TCompany t where t.roleId =  2 " ;
 		  List<TCompany> list = supplierOrderDao.find(hql);
 		  return list;
 	}

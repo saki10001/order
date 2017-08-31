@@ -69,6 +69,14 @@ public class SupplierOrderAction extends BaseAction implements ModelDriven<TSupl
 		String supllierOrder = getParameter("order");
 		super.writeJson(supllierOrderService.loadAll(sort, supllierOrder, page, rows));
 	}
+	
+	public void loadByCompanyId(){
+		String companyId = getParameter("companyId");
+		 if(StringUtils.isEmpty(companyId)) {
+			   companyId = String.valueOf((Integer)getSession().getAttribute("companyId"));
+		 }
+		super.writeJson(supllierOrderService.searchBycompanyId("companyId", companyId,sort, null, page, rows));
+	}
 	public void add(){
 		supllierOrderService.add(supllierOrder);
 	}
@@ -90,8 +98,12 @@ public class SupplierOrderAction extends BaseAction implements ModelDriven<TSupl
 	
 	public void searchDetail() {
 		String id = getParameter("id");
+		String companyId = getParameter("companyId");
+		 if(StringUtils.isEmpty(companyId)) {
+			   companyId = String.valueOf((Integer)getSession().getAttribute("companyId"));
+		 }
 		if(!StringUtils.isEmpty(id)) {
-			List<Map<String,Object>>  list = supllierOrderService.searchDetail(id);
+			List<Map<String,Object>>  list = supllierOrderService.searchDetail(id , companyId);
 			String jsonString = JSON.toJSONString(list);
 			JSONArray jsonArray = JSONArray.parseArray(jsonString);
 			super.writeJson(jsonArray);
@@ -190,6 +202,24 @@ public class SupplierOrderAction extends BaseAction implements ModelDriven<TSupl
 	     super.writeJson(j);
 	} 
 	
+	public void getSupllierPrice(){
+		String orderId = getParameter("id");
+		 System.out.println(orderId);
+		 String update = getParameter("updated");
+		 String msg = "";
+		 if(StringUtils.isNotEmpty(update)) {
+			msg =  supllierOrderService.updateSupllierPrice(update);
+		 }
+		 Message j = new Message();
+		 if(StringUtils.isEmpty(msg)){
+			 j.setSuccess(true);
+			 j.setMsg("保存成功");
+		 }else{
+			 j.setSuccess(false);
+			 j.setMsg(msg);
+		 }
+	     super.writeJson(j);
+	}
 	
 	public void getCompany(){
 		List<TCompany>  list = supllierOrderService.searchCompany();

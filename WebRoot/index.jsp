@@ -133,6 +133,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 
         </iframe>
       </div>
+    </div>
     <!-- /#wrapper -->
 
     <script type="text/javascript">

@@ -1,4 +1,4 @@
-package com.saki.test;
+ package com.saki.test;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -26,7 +26,7 @@ public class SupllierTask {
 	 * 
 	 */
     public void getSupllierOrder(){  
-    		//supllierOrderService.getSupllierOrder();
+    		supllierOrderService.getSupllierOrder();
     }  
       
     

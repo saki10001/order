@@ -28,16 +28,16 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
  	</div>
  	<div  id="order_dlg" closed="true" class="easyui-dialog" style="width:800px;height: 450px"
 			data-options="border:'thin',cls:'c1',collapsible:false,modal:true,closable:false,top:10,buttons: '#company_dlg_buttons'">
-		    	<form id="order_form" role="form" style="padding: 20px">
-				<input type="hidden"  id = "id"  name = "id">
-		    		<div class="form-group col-md-6">
+		    	<form id="order_form" role="form" style="margin: 0px">
+					<input type="hidden"  id = "id"  name = "id">
+		    	<!-- <div class="form-group col-md-6">
 		            	<label class="col-md-4" style="display: inline-block;height: 34px;line-height: 34px;text-align: left;width: 30%">订单编号：</label>
 		                <input name="orderNo" id="orderNo" class="form-control" style="display: inline-block;width: 30%">
 		        </div>
 		        <div class="form-group col-md-6">
 		                	<label class="col-md-4" style="display: inline-block;height: 34px;line-height: 34px;text-align: left;width: 30%">下单时间：</label>
 		                <input name="startDate" id = "startDate" class="easyui-datebox" style="display: inline-block;width: 30%">
-		        </div>
+		        </div> -->
 		    	</form>   
 			    	<table id="table_add" class="easyui-datagrid" fit="true" ></table>              
 		</div>
@@ -147,7 +147,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     	var editIndex = undefined;
 
     	$(function(){
-    		   if(${roleId} == '3'){
+    		   if("${roleId}" == '3'){
 				$('#table_add').datagrid({
 					url:'${pageContext.request.contextPath}/orderAction!searchDetail.action' ,
 					pagination: true,
@@ -266,7 +266,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					]],
 					
 				});
-    		   }else if(${roleId} == '1'){
+    		   }else if("${roleId}" == '1'){
     			   $('#table_add').datagrid({
    					url:'${pageContext.request.contextPath}/orderAction!searchDetail.action' ,
    					pagination: true,

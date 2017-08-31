@@ -10,7 +10,7 @@ import com.saki.model.TSupllierOrderDetail;
 public interface SupllierOrderServiceI  extends BaseServiceI{
 
 
-	List<Map<String, Object>> searchDetail(String id);
+	List<Map<String, Object>> searchDetail(String id , String   companyId);
 
 	List<TProduct> searchProduct();
 
@@ -29,4 +29,9 @@ public interface SupllierOrderServiceI  extends BaseServiceI{
 	List<TCompany> searchCompany();
 	
 	public String updateDetail(String update) ;
+
+	Object searchBycompanyId(String string, String companyId, String sort,
+			String orderColumn, String page, String rows);
+
+	String updateSupllierPrice(String update);
 }
